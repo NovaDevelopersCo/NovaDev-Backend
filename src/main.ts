@@ -7,7 +7,9 @@ import * as basicAuth from 'express-basic-auth'
 async function start() {
     const app = await NestFactory.create(AppModule)
     const PORT = Number(process.env.PORT) || 5000
-    app.enableCors()
+    app.enableCors({
+        origin: true,
+    })
     app.use(
         // Paths you want to protect with basic auth
         '/api/docs*',
