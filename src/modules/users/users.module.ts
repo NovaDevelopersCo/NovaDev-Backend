@@ -11,12 +11,24 @@ import { Tags } from 'src/modules/tags/model/tags.model'
 import { UserTag } from 'src/modules/tags/model/tagsUser.model'
 import { TariffModule } from '../tariff/tariff.module'
 import { TagsModule } from '../tags/tags.module'
+import { Project } from '../project/model/project.model'
+import { UserProject } from '../project/model/projectUser.model'
+import { ProjectModule } from '../project/project.module'
 
 @Module({
     controllers: [UsersController],
     providers: [UsersService],
     imports: [
-        SequelizeModule.forFeature([User, Role, Post, Tags, UserTag]),
+        SequelizeModule.forFeature([
+            User,
+            Role,
+            Post,
+            Tags,
+            UserTag,
+            Project,
+            UserProject,
+        ]),
+        forwardRef(() => ProjectModule),
         forwardRef(() => TagsModule),
         RolesModule,
         TariffModule,

@@ -14,6 +14,8 @@ import { Post } from 'src/modules/posts/model/posts.model'
 import { Tags } from 'src/modules/tags/model/tags.model'
 import { Profile, ProfileDefault } from './profile.model'
 import { UserTag } from 'src/modules/tags/model/tagsUser.model'
+import { Project } from 'src/modules/project/model/project.model'
+import { UserProject } from 'src/modules/project/model/projectUser.model'
 
 interface UserCreationAttrs {
     email: string
@@ -21,6 +23,7 @@ interface UserCreationAttrs {
     tariffId: number
     roleId: number
     profile: Profile
+    projects: Project[]
     tags: Tags[]
 }
 
@@ -64,8 +67,14 @@ export class User extends Model<User, UserCreationAttrs> {
     @BelongsToMany(() => Tags, () => UserTag)
     tags: Tags[]
 
+    @BelongsToMany(() => Project, () => UserProject)
+    projects: Project[]
+
     @ForeignKey(() => Tags)
     tagId: number
+
+    @ForeignKey(() => Project)
+    ProjectId: number
 
     @BelongsTo(() => Tariff)
     tariff: Tariff

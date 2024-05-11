@@ -1,10 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger'
 
-export class InteractionTagDto {
-    @ApiProperty({ example: '1', description: 'Айди тега' })
-    Tagid: number
+export class InteractionProjectDto {
+    @ApiProperty({ example: '1', description: 'Айди Проекта' })
+    projectId: number
 
     @ApiProperty({ example: '1', description: 'Айди пользывателя' })
     userId: number
 }
- 
