@@ -17,6 +17,8 @@ import { TariffModule } from './modules/tariff/tariff.module'
 import { Tariff } from './modules/tariff/model/tariff.model'
 import { Tags } from './modules/tags/model/tags.model'
 import { UserTag } from './modules/tags/model/tagsUser.model'
+import { Team } from './modules/teams/model/teams.model'
+import { TeamsModule } from './modules/teams/teams.module'
 
 @Module({
     controllers: [TagsController],
@@ -42,7 +44,7 @@ import { UserTag } from './modules/tags/model/tagsUser.model'
                     rejectUnauthorized: false,
                 },
             },
-            models: [User, Role, Post, Tariff, Tags, UserTag],
+            models: [User, Role, Team, Post, Tariff, Tags, UserTag],
             autoLoadModels: true,
             synchronize: true,
         }),
@@ -53,6 +55,7 @@ import { UserTag } from './modules/tags/model/tagsUser.model'
         AuthModule,
         PostsModule,
         FilesModule,
+        TeamsModule,
     ],
 })
 export class AppModule {}

@@ -11,15 +11,18 @@ import { Tags } from 'src/modules/tags/model/tags.model'
 import { UserTag } from 'src/modules/tags/model/tagsUser.model'
 import { TariffModule } from '../tariff/tariff.module'
 import { TagsModule } from '../tags/tags.module'
+import { Team } from '../teams/model/teams.model'
+import { TeamsModule } from '../teams/teams.module'
 
 @Module({
     controllers: [UsersController],
     providers: [UsersService],
     imports: [
-        SequelizeModule.forFeature([User, Role, Post, Tags, UserTag]),
+        SequelizeModule.forFeature([User, Role, Team, Post, Tags, UserTag]),
         forwardRef(() => TagsModule),
         RolesModule,
         TariffModule,
+        TeamsModule,
         forwardRef(() => AuthModule),
     ],
     exports: [UsersService],

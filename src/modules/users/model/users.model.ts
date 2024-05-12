@@ -14,6 +14,7 @@ import { Post } from 'src/modules/posts/model/posts.model'
 import { Tags } from 'src/modules/tags/model/tags.model'
 import { Profile, ProfileDefault } from './profile.model'
 import { UserTag } from 'src/modules/tags/model/tagsUser.model'
+import { Team } from 'src/modules/teams/model/teams.model'
 
 interface UserCreationAttrs {
     email: string
@@ -72,6 +73,13 @@ export class User extends Model<User, UserCreationAttrs> {
 
     @BelongsTo(() => Role)
     role: Role
+
+    @ForeignKey(() => Team)
+    @Column({ type: DataType.INTEGER })
+    teamId?: number
+
+    @BelongsTo(() => Team)
+    team?: Team
 
     @HasMany(() => Post)
     posts: Post[]
