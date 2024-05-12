@@ -6,12 +6,14 @@ import { ChangeUserDateDto } from './dto/change-user.dto'
 import { BanUserDto } from './dto/ban-user.dto'
 import * as bcrypt from 'bcryptjs'
 import { TariffService } from '../tariff/tariff.service'
+import { TeamsService } from '../teams/teams.service'
 @Injectable()
 export class UsersService {
     constructor(
         @InjectModel(User) private userRepository: typeof User,
         private roleService: RolesService,
-        private tariffService: TariffService
+        private tariffService: TariffService,
+        private teamService: TeamsService
     ) {}
     async getAllUsers() {
         const users = await this.userRepository.findAll({
@@ -62,6 +64,12 @@ export class UsersService {
         if (user && role && tariff) {
             user.tariffId = tariff.id
             user.roleId = role.id
+            await user.save()
+        }
+
+        const team = await this.teamService.getTeamByTitle('Cool Team')
+        if (user && team) {
+            user.teamId = team.id
             await user.save()
         }
 
