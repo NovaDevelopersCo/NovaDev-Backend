@@ -7,14 +7,13 @@ import {
     BelongsTo,
 } from 'sequelize-typescript'
 import { Role } from 'src/modules/roles/model/roles.model'
-import { Profile, ProfileDefault } from './profile.model'
+import { Team } from 'src/modules/teams/model/teams.model'
 
 interface UserCreationAttrs {
     email: string
     password: string
     tariffId: number
     roleId: number
-    profile: Profile
 }
 
 @Table({ tableName: 'users' })
@@ -33,23 +32,14 @@ export class User extends Model<User, UserCreationAttrs> {
     @Column({ type: DataType.STRING, allowNull: false })
     password: string
 
-    @Column({ type: DataType.BOOLEAN, defaultValue: false })
-    banned: boolean
-
-    @Column({ type: DataType.STRING, allowNull: true, defaultValue: null })
-    banReason: string
-
-    @Column({
-        type: DataType.JSON,
-        allowNull: true,
-        defaultValue: ProfileDefault,
-    })
-    profile: Profile
-
     @ForeignKey(() => Role)
     @Column({ type: DataType.INTEGER })
     roleId: number
 
     @BelongsTo(() => Role)
     role: Role
+
+    @ForeignKey(() => Team)
+    @Column({ type: DataType.INTEGER })
+    teamId: number
 }
