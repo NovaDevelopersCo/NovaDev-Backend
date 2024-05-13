@@ -32,6 +32,21 @@ export class User extends Model<User, UserCreationAttrs> {
     @Column({ type: DataType.STRING, allowNull: false })
     password: string
 
+    @Column({ type: DataType.STRING, allowNull: false })
+    public_nickname: string
+
+    @Column({ type: DataType.STRING, allowNull: false })
+    full_name: string
+
+    @Column({ type: DataType.STRING, allowNull: false })
+    phone: string
+
+    @Column({ type: DataType.STRING, allowNull: false })
+    github: string
+
+    @Column({ type: DataType.STRING, allowNull: false })
+    tg: string
+
     @ForeignKey(() => Role)
     @Column({ type: DataType.INTEGER })
     roleId: number
