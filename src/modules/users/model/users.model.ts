@@ -11,7 +11,6 @@ import { Role } from 'src/modules/roles/model/roles.model'
 interface UserCreationAttrs {
     email: string
     password: string
-    tariffId: number
     roleId: number
 }
 
