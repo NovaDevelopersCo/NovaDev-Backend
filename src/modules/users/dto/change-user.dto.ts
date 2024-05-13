@@ -4,6 +4,4 @@ export class ChangeUserDateDto {
     readonly newPassword?: string
 
     readonly newRole?: string
-
-    readonly newTariff?: string
 }

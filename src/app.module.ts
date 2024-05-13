@@ -9,8 +9,6 @@ import { AuthModule } from './modules/auth/auth.module'
 import { FilesModule } from './modules/files/files.module'
 import { ServeStaticModule } from '@nestjs/serve-static'
 import * as path from 'path'
-import { TariffModule } from './modules/tariff/tariff.module'
-import { Tariff } from './modules/tariff/model/tariff.model'
 
 @Module({
     controllers: [],
@@ -36,12 +34,11 @@ import { Tariff } from './modules/tariff/model/tariff.model'
                     rejectUnauthorized: false,
                 },
             },
-            models: [User, Role, Tariff],
+            models: [User, Role],
             autoLoadModels: true,
             synchronize: true,
         }),
         UsersModule,
-        TariffModule,
         RolesModule,
         AuthModule,
         FilesModule,

@@ -7,7 +7,6 @@ import {
     BelongsTo,
 } from 'sequelize-typescript'
 import { Role } from 'src/modules/roles/model/roles.model'
-import { Tariff } from 'src/modules/tariff/model/tariff.model'
 import { Profile, ProfileDefault } from './profile.model'
 
 interface UserCreationAttrs {
@@ -50,13 +49,6 @@ export class User extends Model<User, UserCreationAttrs> {
     @ForeignKey(() => Role)
     @Column({ type: DataType.INTEGER })
     roleId: number
-
-    @ForeignKey(() => Tariff)
-    @Column({ type: DataType.INTEGER })
-    tariffId: number
-
-    @BelongsTo(() => Tariff)
-    tariff: Tariff
 
     @BelongsTo(() => Role)
     role: Role
