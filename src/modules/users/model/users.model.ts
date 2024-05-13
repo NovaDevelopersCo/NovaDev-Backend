@@ -47,6 +47,9 @@ export class User extends Model<User, UserCreationAttrs> {
     @Column({ type: DataType.STRING, allowNull: true })
     tg: string
 
+    @Column({ type: DataType.STRING, allowNull: true })
+    payment_info: string
+
     @ForeignKey(() => Role)
     @Column({ type: DataType.INTEGER })
     roleId: number
