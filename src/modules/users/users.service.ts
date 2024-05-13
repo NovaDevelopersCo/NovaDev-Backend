@@ -53,6 +53,11 @@ export class UsersService {
         const user = await this.userRepository.create({
             email: Math.random().toString(36).slice(-8) + '@nova.com',
             password: hashPassword,
+            auth: {
+                private_nickname:
+                    Math.random().toString(36).slice(-8) + '@nova.com',
+                password: hashPassword,
+            },
         })
 
         const role = await this.roleService.getRoleByTitle('SUPER_ADMIN')
