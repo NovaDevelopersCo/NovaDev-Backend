@@ -5,14 +5,12 @@ import { RolesService } from '../roles/roles.service'
 import { ChangeUserDateDto } from './dto/change-user.dto'
 import { BanUserDto } from './dto/ban-user.dto'
 import * as bcrypt from 'bcryptjs'
-import { TariffService } from '../tariff/tariff.service'
 import { TeamsService } from '../teams/teams.service'
 @Injectable()
 export class UsersService {
     constructor(
         @InjectModel(User) private userRepository: typeof User,
         private roleService: RolesService,
-        private tariffService: TariffService,
         private teamService: TeamsService
     ) {}
     async getAllUsers() {
@@ -60,9 +58,7 @@ export class UsersService {
         })
 
         const role = await this.roleService.getRoleByTitle('SUPER_ADMIN')
-        const tariff = await this.tariffService.getTariffByTitle('Basic')
-        if (user && role && tariff) {
-            user.tariffId = tariff.id
+        if (user && role) {
             user.roleId = role.id
             await user.save()
         }
@@ -104,14 +100,6 @@ export class UsersService {
                 user.roleId = role.id
             }
         }
-        if (dto.newTariff) {
-            const tariff = await this.tariffService.getTariffByTitle(
-                dto.newTariff
-            )
-            if (tariff) {
-                user.tariffId = tariff.id
-            }
-        }
         Logger.log('User change successfully')
         await user.save()
 
@@ -119,7 +107,6 @@ export class UsersService {
             newEmail: dto.newEmail,
             newPassword: dto.newPassword,
             newRole: dto.newRole,
-            newTariff: dto.newTariff,
         }
     }
 

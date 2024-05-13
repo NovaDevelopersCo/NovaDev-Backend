@@ -5,16 +5,9 @@ import {
     Model,
     Table,
     BelongsTo,
-    HasMany,
-    BelongsToMany,
 } from 'sequelize-typescript'
 import { Role } from 'src/modules/roles/model/roles.model'
-import { Tariff } from 'src/modules/tariff/model/tariff.model'
-import { Post } from 'src/modules/posts/model/posts.model'
-import { Tags } from 'src/modules/tags/model/tags.model'
 import { Profile, ProfileDefault } from './profile.model'
-import { UserTag } from 'src/modules/tags/model/tagsUser.model'
-import { Team } from 'src/modules/teams/model/teams.model'
 
 interface UserCreationAttrs {
     email: string
@@ -22,7 +15,6 @@ interface UserCreationAttrs {
     tariffId: number
     roleId: number
     profile: Profile
-    tags: Tags[]
 }
 
 @Table({ tableName: 'users' })
@@ -58,29 +50,6 @@ export class User extends Model<User, UserCreationAttrs> {
     @Column({ type: DataType.INTEGER })
     roleId: number
 
-    @ForeignKey(() => Tariff)
-    @Column({ type: DataType.INTEGER })
-    tariffId: number
-
-    @BelongsToMany(() => Tags, () => UserTag)
-    tags: Tags[]
-
-    @ForeignKey(() => Tags)
-    tagId: number
-
-    @BelongsTo(() => Tariff)
-    tariff: Tariff
-
     @BelongsTo(() => Role)
     role: Role
-
-    @ForeignKey(() => Team)
-    @Column({ type: DataType.INTEGER })
-    teamId?: number
-
-    @BelongsTo(() => Team)
-    team?: Team
-
-    @HasMany(() => Post)
-    posts: Post[]
 }
