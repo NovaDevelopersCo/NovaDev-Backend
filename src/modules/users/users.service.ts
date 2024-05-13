@@ -46,6 +46,17 @@ export class UsersService {
         }
     }
 
+    async createUserAuthInfo(email) {
+        const user = await this.userRepository.findOne({
+            where: {
+                'auth.email': email,
+            },
+            include: { all: true },
+        })
+        Logger.log('User with email: ' + user.email + 'got')
+        return user
+    }
+
     async createUser() {
         const plainPassword = Math.random().toString(36).slice(-8)
         const hashPassword = await bcrypt.hash(plainPassword, 10)
