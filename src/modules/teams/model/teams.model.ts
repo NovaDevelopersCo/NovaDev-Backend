@@ -1,13 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger'
-import {
-    BelongsTo,
-    Column,
-    DataType,
-    ForeignKey,
-    HasMany,
-    Model,
-    Table,
-} from 'sequelize-typescript'
+import { Column, DataType, HasMany, Model, Table } from 'sequelize-typescript'
 import { User } from 'src/modules/users/model/users.model'
 
 interface TeamCreationAttrs {
@@ -44,14 +36,6 @@ export class Team extends Model<Team, TeamCreationAttrs> {
     })
     @Column({ type: DataType.STRING, allowNull: false })
     image: string
-
-    @ApiProperty({ example: 1, description: 'ID пользователя' })
-    @ForeignKey(() => User)
-    @Column({ type: DataType.INTEGER })
-    userId: number
-
-    @BelongsTo(() => User)
-    teamlead: User
 
     @HasMany(() => User)
     users: User[]
