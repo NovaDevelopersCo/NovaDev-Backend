@@ -18,7 +18,6 @@ import {
 import { User } from './model/users.model'
 import { RolesGuard } from 'src/guards/roles.guard'
 import { Roles } from 'src/decorators/roles-auth.decorator'
-import { BanUserDto } from './dto/ban-user.dto'
 import { ChangeUserDateDto } from './dto/change-user.dto'
 
 @ApiTags('Пользователи')
@@ -69,15 +68,6 @@ export class UsersController {
         return this.userService.createUser()
     }
 
-    @ApiOperation({ summary: 'Забанить пользователя' })
-    @ApiResponse({ status: 200 })
-    @Roles('ADMIN')
-    @ApiBearerAuth('JWT-auth')
-    @UseGuards(RolesGuard)
-    @Post('/ban')
-    banUser(@Body() dto: BanUserDto) {
-        return this.userService.ban(dto)
-    }
     @ApiOperation({ summary: 'Удалить Пользывателя' })
     @ApiResponse({ status: 200 })
     @Roles('ADMIN')

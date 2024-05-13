@@ -3,7 +3,6 @@ import { User } from './model/users.model'
 import { InjectModel } from '@nestjs/sequelize'
 import { RolesService } from '../roles/roles.service'
 import { ChangeUserDateDto } from './dto/change-user.dto'
-import { BanUserDto } from './dto/ban-user.dto'
 import * as bcrypt from 'bcryptjs'
 import { TeamsService } from '../teams/teams.service'
 @Injectable()
@@ -107,27 +106,6 @@ export class UsersService {
             newEmail: dto.newEmail,
             newPassword: dto.newPassword,
             newRole: dto.newRole,
-        }
-    }
-
-    async ban(dto: BanUserDto) {
-        const user = await this.userRepository.findByPk(dto.userId)
-        if (!user) {
-            Logger.log('User not found')
-            throw new HttpException('User not found', HttpStatus.NOT_FOUND)
-        }
-        try {
-            user.banned = true
-            user.banReason = dto.banReason
-            await user.save()
-            Logger.log('User banned successfully')
-            return user
-        } catch {
-            Logger.log('Error banning user')
-            throw new HttpException(
-                'Error banning user',
-                HttpStatus.INTERNAL_SERVER_ERROR
-            )
         }
     }
 }
