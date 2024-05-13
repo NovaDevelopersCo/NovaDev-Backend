@@ -28,15 +28,7 @@ export class AuthService {
             token: this.jwtService.sign(payload),
         }
     }
-    private extractToken(authorizationHeader: string): string {
-        if (
-            !authorizationHeader ||
-            !authorizationHeader.startsWith('Bearer ')
-        ) {
-            throw new UnauthorizedException('Invalid authorization header')
-        }
-        return authorizationHeader.split(' ')[1]
-    }
+
     private async validateUser(userDto: CreateUserDto) {
         const user = await this.userService.getUserByEmail(userDto.email)
         const passwordEquals = await bcrypt.compare(
