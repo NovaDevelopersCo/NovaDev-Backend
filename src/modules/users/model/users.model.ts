@@ -60,4 +60,7 @@ export class User extends Model<User, UserCreationAttrs> {
     @ForeignKey(() => Team)
     @Column({ type: DataType.INTEGER })
     teamId: number
+
+    @BelongsTo(() => Team)
+    team: Team
 }
