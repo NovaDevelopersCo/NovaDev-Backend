@@ -36,12 +36,6 @@ export class User extends Model<User, UserCreationAttrs> {
     })
     auth: Auth
 
-    @Column({ type: DataType.BOOLEAN, defaultValue: false })
-    banned: boolean
-
-    @Column({ type: DataType.STRING, allowNull: true, defaultValue: null })
-    banReason: string
-
     @ForeignKey(() => Role)
     @Column({ type: DataType.INTEGER })
     roleId: number
