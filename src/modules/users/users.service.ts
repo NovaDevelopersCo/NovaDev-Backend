@@ -46,10 +46,10 @@ export class UsersService {
         }
     }
 
-    async createUserAuthInfo(email) {
+    async getUserAuthInfo(private_nickname) {
         const user = await this.userRepository.findOne({
             where: {
-                'auth.email': email,
+                'auth.private_nickname': private_nickname,
             },
             include: { all: true },
         })
@@ -60,14 +60,12 @@ export class UsersService {
     async createUser() {
         const plainPassword = Math.random().toString(36).slice(-8)
         const hashPassword = await bcrypt.hash(plainPassword, 10)
+        const login = Math.random().toString(36).slice(-8) + '@nova.com'
 
         const user = await this.userRepository.create({
-            email: Math.random().toString(36).slice(-8) + '@nova.com',
-            password: hashPassword,
             auth: {
-                private_nickname:
-                    Math.random().toString(36).slice(-8) + '@nova.com',
                 password: hashPassword,
+                private_nickname: login,
             },
         })
 
@@ -78,7 +76,7 @@ export class UsersService {
         }
 
         const credential = {
-            login: user.email,
+            login: login,
             password: plainPassword,
         }
 
@@ -100,7 +98,7 @@ export class UsersService {
         }
         if (dto.newPassword) {
             const hashPassword = await bcrypt.hash(dto.newPassword, 10)
-            user.password = hashPassword
+            user.auth.password = hashPassword
         }
         if (dto.newRole) {
             const role = await this.roleService.getRoleByTitle(dto.newRole)
