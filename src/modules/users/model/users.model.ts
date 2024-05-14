@@ -7,12 +7,13 @@ import {
     BelongsTo,
 } from 'sequelize-typescript'
 import { Role } from 'src/modules/roles/model/roles.model'
+import { Auth, AuthDefault } from './auth.model'
 
 interface UserCreationAttrs {
     email: string
     password: string
-    tariffId: number
     roleId: number
+    auth: Auth
 }
 
 @Table({ tableName: 'users' })
@@ -25,17 +26,15 @@ export class User extends Model<User, UserCreationAttrs> {
     })
     id: number
 
-    @Column({ type: DataType.STRING, unique: true, allowNull: false })
+    @Column({ type: DataType.STRING, allowNull: true })
     email: string
 
-    @Column({ type: DataType.STRING, allowNull: false })
-    password: string
-
-    @Column({ type: DataType.BOOLEAN, defaultValue: false })
-    banned: boolean
-
-    @Column({ type: DataType.STRING, allowNull: true, defaultValue: null })
-    banReason: string
+    @Column({
+        type: DataType.JSON,
+        allowNull: false,
+        defaultValue: AuthDefault,
+    })
+    auth: Auth
 
     @ForeignKey(() => Role)
     @Column({ type: DataType.INTEGER })

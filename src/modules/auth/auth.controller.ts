@@ -6,10 +6,10 @@ import {
     ApiTags,
 } from '@nestjs/swagger'
 
-import { CreateUserDto } from 'src/modules/users/dto/create-user.dto'
 import { AuthService } from './auth.service'
 import { Roles } from 'src/decorators/roles-auth.decorator'
 import { RolesGuard } from 'src/guards/roles.guard'
+import { LoginDto } from './dto/login.dto'
 
 @ApiTags('Авторизация')
 @Controller('auth')
@@ -17,8 +17,8 @@ export class AuthController {
     constructor(private authService: AuthService) {}
 
     @Post('/login')
-    login(@Body() userDto: CreateUserDto) {
-        return this.authService.login(userDto)
+    login(@Body() dto: LoginDto) {
+        return this.authService.login(dto)
     }
 
     @ApiOperation({

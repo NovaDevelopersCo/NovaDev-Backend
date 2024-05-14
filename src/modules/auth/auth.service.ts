@@ -1,9 +1,9 @@
 import { Injectable, Logger, UnauthorizedException } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
-import { CreateUserDto } from 'src/modules/users/dto/create-user.dto'
 import { UsersService } from 'src/modules/users/users.service'
 import * as bcrypt from 'bcryptjs'
 import { User } from 'src/modules/users/model/users.model'
+import { LoginDto } from './dto/login.dto'
 
 @Injectable()
 export class AuthService {
@@ -12,8 +12,8 @@ export class AuthService {
         private jwtService: JwtService
     ) {}
 
-    async login(userDto: CreateUserDto) {
-        const user = await this.validateUser(userDto)
+    async login(dto: LoginDto) {
+        const user = await this.validateUser(dto)
         Logger.log('User was logged in successfully')
         return this.generateToken(user)
     }
@@ -28,20 +28,14 @@ export class AuthService {
             token: this.jwtService.sign(payload),
         }
     }
-    private extractToken(authorizationHeader: string): string {
-        if (
-            !authorizationHeader ||
-            !authorizationHeader.startsWith('Bearer ')
-        ) {
-            throw new UnauthorizedException('Invalid authorization header')
-        }
-        return authorizationHeader.split(' ')[1]
-    }
-    private async validateUser(userDto: CreateUserDto) {
-        const user = await this.userService.getUserByEmail(userDto.email)
+
+    private async validateUser(dto: LoginDto) {
+        const user = await this.userService.getUserAuthInfo(
+            dto.private_nickname
+        )
         const passwordEquals = await bcrypt.compare(
-            userDto.password,
-            user.password
+            dto.password,
+            user.auth.password
         )
         if (user && passwordEquals) {
             return user
