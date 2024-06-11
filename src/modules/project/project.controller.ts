@@ -8,7 +8,7 @@ import {
     Put,
     UseGuards,
 } from '@nestjs/common'
-import { ProjectService } from './Project.service'
+import { ProjectService } from './project.service'
 import { CreateProjectDto } from './dto/create-project.dto'
 import {
     ApiBearerAuth,
@@ -16,7 +16,7 @@ import {
     ApiResponse,
     ApiTags,
 } from '@nestjs/swagger'
-import { Project } from './model/Project.model'
+import { Project } from './model/project.model'
 import { Roles } from 'src/decorators/roles-auth.decorator'
 import { RolesGuard } from 'src/guards/roles.guard'
 import { InteractionProjectDto } from './dto/interaction-project.dto'
@@ -24,7 +24,7 @@ import { InteractionProjectDto } from './dto/interaction-project.dto'
 @ApiTags('Проекты')
 @Controller('project')
 export class ProjectController {
-    constructor(private projectService: ProjectService) {}
+    constructor(private readonly projectService: ProjectService) {}
 
     @ApiOperation({ summary: 'Создание Проекта' })
     @ApiResponse({ status: 200, type: Project })

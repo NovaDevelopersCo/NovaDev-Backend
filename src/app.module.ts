@@ -53,7 +53,7 @@ import { UserProject } from './modules/project/model/projectUser.model'
                 Tags,
                 UserTag,
                 Project,
-                UserProject,
+                UserProject
             ],
             autoLoadModels: true,
             synchronize: true,

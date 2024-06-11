@@ -1,16 +1,16 @@
 import { HttpStatus, Injectable, HttpException, Logger } from '@nestjs/common'
-
 import { InjectModel } from '@nestjs/sequelize'
-import { UsersService } from '../users/users.service'
 import { User } from '../users/model/users.model'
 import { Project } from './model/project.model'
 import { CreateProjectDto } from './dto/create-project.dto'
+import { UserProject } from './model/projectUser.model'
 
 @Injectable()
 export class ProjectService {
     constructor(
         @InjectModel(Project) private projectRepository: typeof Project,
-        private readonly userService: UsersService
+        @InjectModel(UserProject)
+        private userProjectRepository: typeof UserProject
     ) {}
 
     async createProject(dto: CreateProjectDto) {
@@ -49,33 +49,28 @@ export class ProjectService {
         if (!project) {
             throw new HttpException('Project not found', HttpStatus.NOT_FOUND)
         }
+
         const user = await User.findByPk(userId)
         if (!user) {
             throw new HttpException('User not found', HttpStatus.NOT_FOUND)
         }
+
         const userProject = await user.$get('projects')
         const userHasProject = userProject.some(
             (userProject: any) => userProject.id === projectId
         )
+
         if (!userHasProject) {
             await user.$add('project', project)
-            return (
-                Logger.log(
-                    `Project with ID ${projectId} added to user with ID ${userId}`
-                ),
-                {
-                    message: 'successful',
-                }
+            Logger.log(
+                `Project with ID ${projectId} added to user with ID ${userId}`
             )
+            return { message: 'successful' }
         } else {
-            return (
-                Logger.log(
-                    `User with ID ${userId} already has project with ID ${projectId}`
-                ),
-                {
-                    message: 'failed',
-                }
+            Logger.log(
+                `User with ID ${userId} already has project with ID ${projectId}`
             )
+            return { message: 'failed' }
         }
     }
 
@@ -96,6 +91,7 @@ export class ProjectService {
         const userHasProject = userProject.some(
             (userProject: any) => userProject.id === projectId
         )
+
         if (userHasProject) {
             await user.$remove('project', project)
             Logger.log(
@@ -110,13 +106,12 @@ export class ProjectService {
         }
     }
 
-    async updateProject(id: number, dto) {
+    async updateProject(id: number, dto: CreateProjectDto) {
         const project = await this.getProjectById(id)
         if (!project) {
             throw new HttpException('Project not found', HttpStatus.NOT_FOUND)
         }
 
-        // Обновляем поля проекта из DTO
         project.title = dto.title
         project.documentation = dto.documentation
         project.server = dto.server
@@ -124,10 +119,8 @@ export class ProjectService {
         project.deadline = dto.deadline
         project.client = dto.client
 
-        // Сохраняем обновленный проект
         await project.save()
 
-        // Возвращаем обновленный проект
         return project
     }
 }
