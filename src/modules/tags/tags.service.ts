@@ -105,9 +105,17 @@ export class TagsService {
         if (!tag) {
             throw new HttpException('Tag not found', HttpStatus.NOT_FOUND)
         }
-        tag.title = dto.title
-        tag.description = dto.description
-        await tag.save()
+        Object.assign(tag, dto)
+
+        try {
+            await tag.save()
+        } catch (error) {
+            throw new HttpException(
+                'Failed to update tag',
+                HttpStatus.INTERNAL_SERVER_ERROR
+            )
+        }
+
         return tag
     }
 }

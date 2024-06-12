@@ -36,9 +36,3 @@ export class Tags extends Model<Tags, TagCreationAttrs> {
     @HasMany(() => User)
     users: User[]
 }
-
-export const TagsDefault: TagCreationAttrs = {
-    title: null,
-    description: null,
-    color: null,
-}
