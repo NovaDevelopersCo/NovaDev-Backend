@@ -1,6 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { Column, DataType, HasMany, Model, Table } from 'sequelize-typescript'
+import {
+    Column,
+    DataType,
+    HasMany,
+    Model,
+    Table,
+    ForeignKey,
+    BelongsTo,
+} from 'sequelize-typescript'
 import { User } from 'src/modules/users/model/users.model'
+import { Client } from 'src/modules/clients/model/client.model' // Предположим, что у вас есть модель Client
 
 interface ProjectCreationAttrs {
     title: string
@@ -8,9 +17,10 @@ interface ProjectCreationAttrs {
     server: string
     documentation: string
     deadline: Date
-    client: string /*Поменять на Client когда он будет*/
+    client: Client /*Поменять на Client когда он будет*/
     users: User[]
 }
+
 @Table({ tableName: 'project' })
 export class Project extends Model<Project, ProjectCreationAttrs> {
     @ApiProperty({ example: 1, description: 'Уникальный идентефикатор' })
@@ -61,8 +71,12 @@ export class Project extends Model<Project, ProjectCreationAttrs> {
         example: 'Марс',
         description: 'Заказчик проекта',
     })
-    @Column({ type: DataType.STRING, allowNull: true })
-    client: string
+    @ForeignKey(() => Client)
+    @Column({ type: DataType.INTEGER })
+    clientId: number
+
+    @BelongsTo(() => Client)
+    client: Client
 
     @HasMany(() => User)
     users: User[]

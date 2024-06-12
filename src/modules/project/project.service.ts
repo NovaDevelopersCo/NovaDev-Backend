@@ -42,6 +42,7 @@ export class ProjectService {
         return { status: HttpStatus.OK, message: 'Project deleted' }
     }
 
+    
     async AddUserToProject(projectId: number, userId: number) {
         const project = await this.projectRepository.findOne({
             where: { id: projectId },
