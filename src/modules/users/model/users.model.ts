@@ -5,14 +5,18 @@ import {
     Model,
     Table,
     BelongsTo,
+    BelongsToMany,
 } from 'sequelize-typescript'
 import { Role } from 'src/modules/roles/model/roles.model'
 import { Auth, AuthDefault } from './auth.model'
+import { Project } from 'src/modules/project/model/project.model'
+import { UserProject } from 'src/modules/project/model/projectUser.model'
 
 interface UserCreationAttrs {
     email: string
     password: string
     roleId: number
+    projects: Project[]
     auth: Auth
 }
 
@@ -42,4 +46,10 @@ export class User extends Model<User, UserCreationAttrs> {
 
     @BelongsTo(() => Role)
     role: Role
+
+    @BelongsToMany(() => Project, () => UserProject)
+    projects: Project[]
+
+    @ForeignKey(() => Project)
+    ProjectId: number
 }
