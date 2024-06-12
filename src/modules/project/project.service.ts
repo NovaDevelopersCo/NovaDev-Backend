@@ -107,20 +107,19 @@ export class ProjectService {
     }
 
     async updateProject(id: number, dto: CreateProjectDto) {
-        const project = await this.getProjectById(id)
+        const project = await this.getProjectById(id);
         if (!project) {
-            throw new HttpException('Project not found', HttpStatus.NOT_FOUND)
+            throw new HttpException('Project not found', HttpStatus.NOT_FOUND);
         }
-
-        project.title = dto.title
-        project.documentation = dto.documentation
-        project.server = dto.server
-        project.technologies = dto.technologies
-        project.deadline = dto.deadline
-        project.client = dto.client
-
-        await project.save()
-
-        return project
+    
+        Object.assign(project, dto);
+    
+        try {
+            await project.save();
+        } catch (error) {
+            throw new HttpException('Failed to update project', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    
+        return project;
     }
 }
