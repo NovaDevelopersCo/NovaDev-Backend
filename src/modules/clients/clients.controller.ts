@@ -70,7 +70,10 @@ export class ClientController {
     @ApiBearerAuth('JWT-auth')
     @UseGuards(RolesGuard)
     addUser(@Body() dto: InteractionClientDto) {
-        return this.clientService.AddClientToProject(dto.projectId, dto.clientId)
+        return this.clientService.AddClientToProject(
+            dto.projectId,
+            dto.clientId
+        )
     }
 
     @ApiOperation({ summary: 'Удаление клиента из проекта' })
@@ -80,7 +83,10 @@ export class ClientController {
     @ApiBearerAuth('JWT-auth')
     @UseGuards(RolesGuard)
     cutUser(@Body() dto: InteractionClientDto) {
-        return this.clientService.CutClientToProject(dto.projectId, dto.clientId)
+        return this.clientService.CutClientToProject(
+            dto.projectId,
+            dto.clientId
+        )
     }
 
     @ApiOperation({ summary: 'Удаление Клиента' })

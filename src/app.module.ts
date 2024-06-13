@@ -1,6 +1,4 @@
 import { ClientModule } from './modules/clients/clients.module'
-import { ClinetService } from './modules/clients/clients.service'
-import { ClientController } from './modules/clients/clients.controller'
 import { Module } from '@nestjs/common'
 import { SequelizeModule } from '@nestjs/sequelize'
 import { UsersModule } from './modules/users/users.module'
