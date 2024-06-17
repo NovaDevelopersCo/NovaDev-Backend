@@ -1,6 +1,16 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { Column, DataType, HasMany, Model, Table } from 'sequelize-typescript'
+import {
+    Column,
+    DataType,
+    Model,
+    Table,
+    BelongsTo,
+    ForeignKey,
+    HasMany,
+} from 'sequelize-typescript'
 import { User } from 'src/modules/users/model/users.model'
+import { Client } from 'src/modules/clients/model/client.model'
+import { UserProject } from './projectUser.model' // Модель связки
 
 interface ProjectCreationAttrs {
     title: string
@@ -8,12 +18,13 @@ interface ProjectCreationAttrs {
     server: string
     documentation: string
     deadline: Date
-    client: string /*Поменять на Client когда он будет*/
+    client: Client // можно оставить как есть или сделать клиент ID
     users: User[]
 }
+
 @Table({ tableName: 'project' })
 export class Project extends Model<Project, ProjectCreationAttrs> {
-    @ApiProperty({ example: 1, description: 'Уникальный идентефикатор' })
+    @ApiProperty({ example: 1, description: 'Уникальный идентификатор' })
     @Column({
         type: DataType.INTEGER,
         unique: true,
@@ -38,7 +49,7 @@ export class Project extends Model<Project, ProjectCreationAttrs> {
 
     @ApiProperty({
         example: 'Пирамида СПБ',
-        description: 'Сервер для проекта Пирамида в Санкт-Питербурге',
+        description: 'Сервер для проекта Пирамида в Санкт-Петербурге',
     })
     @Column({ type: DataType.STRING, allowNull: true })
     server: string
@@ -57,13 +68,13 @@ export class Project extends Model<Project, ProjectCreationAttrs> {
     @Column({ type: DataType.DATE, allowNull: true })
     deadline: Date
 
-    @ApiProperty({
-        example: 'Марс',
-        description: 'Заказчик проекта',
-    })
-    @Column({ type: DataType.STRING, allowNull: true })
-    client: string
+    @ForeignKey(() => Client)
+    @Column({ type: DataType.INTEGER })
+    clientId: number
 
-    @HasMany(() => User)
-    users: User[]
+    @BelongsTo(() => Client)
+    client: Client
+
+    @HasMany(() => UserProject)
+    users: UserProject[]
 }

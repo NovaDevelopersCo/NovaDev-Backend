@@ -65,12 +65,12 @@ export class ProjectService {
             Logger.log(
                 `Project with ID ${projectId} added to user with ID ${userId}`
             )
-            return { message: 'successful' }
+            return { status: HttpStatus.OK, message: 'successful' }
         } else {
             Logger.log(
                 `User with ID ${userId} already has project with ID ${projectId}`
             )
-            return { message: 'failed' }
+            return { status: HttpStatus.CONFLICT, message: 'failed' }
         }
     }
 
@@ -97,12 +97,12 @@ export class ProjectService {
             Logger.log(
                 `Project with ID ${projectId} removed from user with ID ${userId}`
             )
-            return { message: 'successful' }
+            return { status: HttpStatus.OK, message: 'successful' }
         } else {
             Logger.log(
                 `User with ID ${userId} does not have project with ID ${projectId}`
             )
-            return { message: 'failed' }
+            return { status: HttpStatus.CONFLICT, message: 'failed' }
         }
     }
 

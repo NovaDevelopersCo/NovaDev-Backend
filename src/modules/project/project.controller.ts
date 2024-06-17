@@ -28,6 +28,7 @@ export class ProjectController {
 
     @ApiOperation({ summary: 'Создание Проекта' })
     @ApiResponse({ status: 200, type: Project })
+    @Roles('ADMIN')
     @UseGuards(RolesGuard)
     @Post()
     create(@Body() dto: CreateProjectDto) {
@@ -36,6 +37,8 @@ export class ProjectController {
 
     @ApiOperation({ summary: 'Получение проекта по названию' })
     @ApiResponse({ status: 200, type: Project })
+    @Roles('ADMIN')
+    @UseGuards(RolesGuard)
     @Get('/:title')
     getBytitle(@Param('title') title: string) {
         return this.projectService.getProjectByTitle(title)
@@ -43,6 +46,8 @@ export class ProjectController {
 
     @ApiOperation({ summary: 'Получение проекта по айди' })
     @ApiResponse({ status: 200, type: Project })
+    @Roles('ADMIN')
+    @UseGuards(RolesGuard)
     @Get('/:id')
     getById(@Param('id') id: number) {
         return this.projectService.getProjectById(id)
@@ -60,7 +65,7 @@ export class ProjectController {
 
     @ApiOperation({ summary: 'Добавление юзера на проект' })
     @ApiResponse({ status: 200, type: Project })
-    @Put('/add')
+    @Post('/add')
     @Roles('ADMIN')
     @ApiBearerAuth('JWT-auth')
     @UseGuards(RolesGuard)
@@ -70,7 +75,7 @@ export class ProjectController {
 
     @ApiOperation({ summary: 'Удаление юзера из проекта' })
     @ApiResponse({ status: 200, type: Project })
-    @Put('/cut')
+    @Post('/cut')
     @Roles('ADMIN')
     @ApiBearerAuth('JWT-auth')
     @UseGuards(RolesGuard)

@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger'
+import { Client } from 'src/modules/clients/model/client.model'
 
 export class CreateProjectDto {
     @ApiProperty({
@@ -35,5 +36,5 @@ export class CreateProjectDto {
         example: 'Марс',
         description: 'Заказчик проекта',
     })
-    client: string
+    client: Client
 }
