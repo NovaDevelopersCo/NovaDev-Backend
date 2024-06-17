@@ -9,7 +9,6 @@ import {
 } from 'sequelize-typescript'
 import { Project } from 'src/modules/project/model/project.model'
 
-
 interface ClientCreationAttrs {
     name: string
     tg: string
