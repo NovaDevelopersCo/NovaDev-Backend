@@ -14,7 +14,6 @@ import { ServeStaticModule } from '@nestjs/serve-static'
 import * as path from 'path'
 import { ProjectModule } from './modules/project/project.module'
 import { Client } from './modules/clients/model/client.model'
-import { ClientProjects } from './modules/clients/model/clientProject.model'
 
 @Module({
     controllers: [],
@@ -40,7 +39,7 @@ import { ClientProjects } from './modules/clients/model/clientProject.model'
                     rejectUnauthorized: false,
                 },
             },
-            models: [User, Role, Project, UserProject, Client, ClientProjects],
+            models: [User, Role, Project, UserProject, Client],
             autoLoadModels: true,
             synchronize: true,
         }),
