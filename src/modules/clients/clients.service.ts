@@ -41,11 +41,10 @@ export class ClinetService {
         await this.clientRepository.destroy({ where: { id } })
         return { status: HttpStatus.OK, message: 'Client deleted' }
     }
-
     async addClientToProject(
         projectId: number,
         clientId: number
-    ): Promise<{ message: string }> {
+    ): Promise<{ status: HttpStatus; message: string }> {
         const project = await this.projectRepository.findByPk(projectId)
         if (!project) {
             throw new HttpException('Project not found', HttpStatus.NOT_FOUND)
@@ -71,10 +70,14 @@ export class ClinetService {
         Logger.log(
             `Project with ID ${projectId} added to client with ID ${clientId}`
         )
-        return { message: 'successful' }
+
+        return { status: HttpStatus.OK, message: 'successful' }
     }
 
-    async CutClientToProject(projectId: number, clientId: number) {
+    async CutClientToProject(
+        projectId: number,
+        clientId: number
+    ): Promise<{ status: HttpStatus; message: string }> {
         const project = await this.projectRepository.findOne({
             where: { id: projectId },
         })
@@ -97,12 +100,12 @@ export class ClinetService {
             Logger.log(
                 `Project with ID ${projectId} removed from client with ID ${clientId}`
             )
-            return { message: 'successful' }
+            return { status: HttpStatus.OK, message: 'successful' }
         } else {
             Logger.log(
                 `Client with ID ${clientId} does not have project with ID ${projectId}`
             )
-            return { message: 'failed' }
+            return { status: HttpStatus.CONFLICT, message: 'failed' }
         }
     }
 
