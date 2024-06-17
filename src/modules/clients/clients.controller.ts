@@ -65,12 +65,12 @@ export class ClientController {
 
     @ApiOperation({ summary: 'Добавление клиента на проект' })
     @ApiResponse({ status: 200, type: Client })
-    @Put('/add')
+    @Post('/add')
     @Roles('ADMIN')
     @ApiBearerAuth('JWT-auth')
     @UseGuards(RolesGuard)
     addUser(@Body() dto: InteractionClientDto) {
-        return this.clientService.AddClientToProject(
+        return this.clientService.addClientToProject(
             dto.projectId,
             dto.clientId
         )
@@ -78,7 +78,7 @@ export class ClientController {
 
     @ApiOperation({ summary: 'Удаление клиента из проекта' })
     @ApiResponse({ status: 200, type: Client })
-    @Put('/cut')
+    @Post('/cut')
     @Roles('ADMIN')
     @ApiBearerAuth('JWT-auth')
     @UseGuards(RolesGuard)

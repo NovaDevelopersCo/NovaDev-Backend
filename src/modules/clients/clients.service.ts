@@ -42,12 +42,20 @@ export class ClinetService {
         return { status: HttpStatus.OK, message: 'Client deleted' }
     }
 
-    async AddClientToProject(projectId: number, clientId: number) {
-        const project = await this.projectRepository.findOne({
-            where: { id: projectId },
-        })
+    async addClientToProject(
+        projectId: number,
+        clientId: number
+    ): Promise<{ message: string }> {
+        const project = await this.projectRepository.findByPk(projectId)
         if (!project) {
             throw new HttpException('Project not found', HttpStatus.NOT_FOUND)
+        }
+
+        if (project.clientId !== null) {
+            throw new HttpException(
+                'Project already has a client',
+                HttpStatus.BAD_REQUEST
+            )
         }
 
         const client = await Client.findByPk(clientId)
@@ -55,23 +63,15 @@ export class ClinetService {
             throw new HttpException('Client not found', HttpStatus.NOT_FOUND)
         }
 
-        const clientProject = await client.$get('projects')
-        const clinetHasProject = clientProject.some(
-            (clientProject: any) => clientProject.id === projectId
-        )
+        await client.$add('projects', project)
 
-        if (!clinetHasProject) {
-            await client.$add('project', project)
-            Logger.log(
-                `Project with ID ${projectId} added to client with ID ${clientId}`
-            )
-            return { message: 'successful' }
-        } else {
-            Logger.log(
-                `Client with ID ${clientId} already has project with ID ${projectId}`
-            )
-            return { message: 'failed' }
-        }
+        project.clientId = client.id
+        await project.save()
+
+        Logger.log(
+            `Project with ID ${projectId} added to client with ID ${clientId}`
+        )
+        return { message: 'successful' }
     }
 
     async CutClientToProject(projectId: number, clientId: number) {

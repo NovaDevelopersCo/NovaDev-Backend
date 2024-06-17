@@ -65,7 +65,7 @@ export class ProjectController {
 
     @ApiOperation({ summary: 'Добавление юзера на проект' })
     @ApiResponse({ status: 200, type: Project })
-    @Put('/add')
+    @Post('/add')
     @Roles('ADMIN')
     @ApiBearerAuth('JWT-auth')
     @UseGuards(RolesGuard)
@@ -75,7 +75,7 @@ export class ProjectController {
 
     @ApiOperation({ summary: 'Удаление юзера из проекта' })
     @ApiResponse({ status: 200, type: Project })
-    @Put('/cut')
+    @Post('/cut')
     @Roles('ADMIN')
     @ApiBearerAuth('JWT-auth')
     @UseGuards(RolesGuard)

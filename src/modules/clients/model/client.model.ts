@@ -1,35 +1,37 @@
-import { ApiProperty } from '@nestjs/swagger'
-import { Column, DataType, HasMany, Model, Table } from 'sequelize-typescript'
-import { Project } from 'src/modules/project/model/project.model'
+import { ApiProperty } from '@nestjs/swagger';
+import { Column, DataType, Model, Table, BelongsToMany } from 'sequelize-typescript';
+import { Project } from 'src/modules/project/model/project.model';
+import { ClientProjects } from './clientProject.model';  // Модель связки
 
 interface ClientCreationAttrs {
-    name: string
-    tg: string
-    phone: string | null
+    name: string;
+    tg: string;
+    phone: string | null;
 }
+
 @Table({ tableName: 'client' })
 export class Client extends Model<Client, ClientCreationAttrs> {
-    @ApiProperty({ example: '1', description: 'Уникальный идентефикатор' })
+    @ApiProperty({ example: '1', description: 'Уникальный идентификатор' })
     @Column({
         type: DataType.INTEGER,
         unique: true,
         primaryKey: true,
         autoIncrement: true,
     })
-    id?: number
+    id?: number;
 
     @ApiProperty({ example: 'Mars', description: 'Имя' })
     @Column({ type: DataType.STRING, unique: true, allowNull: false })
-    name: string
+    name: string;
 
     @ApiProperty({ example: '@igornezimin', description: 'Айди телеграма' })
     @Column({ type: DataType.STRING, unique: true, allowNull: false })
-    tg: string
+    tg: string;
 
     @ApiProperty({ example: '+79261234567', description: 'Телефон' })
     @Column({ type: DataType.STRING, unique: true, allowNull: false })
-    phone: string | null
+    phone: string | null;
 
-    @HasMany(() => Project)
-    projects: Project[]
+    @BelongsToMany(() => Project, () => ClientProjects)
+    projects: Project[];
 }

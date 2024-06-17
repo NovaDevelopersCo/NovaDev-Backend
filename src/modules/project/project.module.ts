@@ -8,12 +8,19 @@ import { AuthModule } from '../auth/auth.module'
 import { UsersModule } from '../users/users.module'
 import { ProjectController } from './project.controller'
 import { Client } from '../clients/model/client.model'
+import { ClientProjects } from '../clients/model/clientProject.model'
 
 @Module({
     controllers: [ProjectController],
     providers: [ProjectService],
     imports: [
-        SequelizeModule.forFeature([Project, UserProject, User, Client]),
+        SequelizeModule.forFeature([
+            Project,
+            UserProject,
+            User,
+            Client,
+            ClientProjects,
+        ]),
         forwardRef(() => AuthModule),
         forwardRef(() => UsersModule),
     ],
