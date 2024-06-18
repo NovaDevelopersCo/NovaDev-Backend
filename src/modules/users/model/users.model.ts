@@ -5,15 +5,21 @@ import {
     Model,
     Table,
     BelongsTo,
+    BelongsToMany,
 } from 'sequelize-typescript'
 import { Role } from 'src/modules/roles/model/roles.model'
 import { Team } from 'src/modules/teams/model/teams.model'
+import { Auth, AuthDefault } from './auth.model'
+import { Project } from 'src/modules/project/model/project.model'
+import { UserProject } from 'src/modules/project/model/projectUser.model'
+
 
 interface UserCreationAttrs {
     email: string
     password: string
-    tariffId: number
     roleId: number
+    projects: Project[]
+    auth: Auth
 }
 
 @Table({ tableName: 'users' })
@@ -26,29 +32,17 @@ export class User extends Model<User, UserCreationAttrs> {
     })
     id: number
 
-    @Column({ type: DataType.STRING, unique: true, allowNull: false })
+    @Column({ type: DataType.STRING, allowNull: true })
     email: string
 
-    @Column({ type: DataType.STRING, allowNull: false })
-    password: string
 
-    @Column({ type: DataType.STRING, allowNull: true })
-    public_nickname: string
+    @Column({
+        type: DataType.JSON,
+        allowNull: false,
+        defaultValue: AuthDefault,
+    })
+    auth: Auth
 
-    @Column({ type: DataType.STRING, allowNull: true })
-    full_name: string
-
-    @Column({ type: DataType.STRING, allowNull: true })
-    phone: string
-
-    @Column({ type: DataType.STRING, allowNull: true })
-    github: string
-
-    @Column({ type: DataType.STRING, allowNull: true })
-    tg: string
-
-    @Column({ type: DataType.STRING, allowNull: true })
-    payment_info: string
 
     @ForeignKey(() => Role)
     @Column({ type: DataType.INTEGER })
@@ -63,4 +57,10 @@ export class User extends Model<User, UserCreationAttrs> {
 
     @BelongsTo(() => Team)
     team: Team
+
+    @BelongsToMany(() => Project, () => UserProject)
+    projects: Project[]
+
+    @ForeignKey(() => Project)
+    ProjectId: number
 }

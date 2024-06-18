@@ -8,14 +8,18 @@ import { RolesModule } from 'src/modules/roles/roles.module'
 import { AuthModule } from 'src/modules/auth/auth.module'
 import { Team } from '../teams/model/teams.model'
 import { TeamsModule } from '../teams/teams.module'
+import { Project } from '../project/model/project.model'
+import { UserProject } from '../project/model/projectUser.model'
+import { ProjectModule } from '../project/project.module'
 
 @Module({
     controllers: [UsersController],
     providers: [UsersService],
     imports: [
-        SequelizeModule.forFeature([User, Role, Team]),
+        SequelizeModule.forFeature([User, Role, UserProject, Project, Team]),
         RolesModule,
         TeamsModule,
+        forwardRef(() => ProjectModule),
         forwardRef(() => AuthModule),
     ],
     exports: [UsersService],

@@ -1,3 +1,4 @@
+import { ClientModule } from './modules/clients/clients.module'
 import { Module } from '@nestjs/common'
 import { SequelizeModule } from '@nestjs/sequelize'
 import { UsersModule } from './modules/users/users.module'
@@ -6,11 +7,16 @@ import { User } from './modules/users/model/users.model'
 import { RolesModule } from './modules/roles/roles.module'
 import { Role } from './modules/roles/model/roles.model'
 import { AuthModule } from './modules/auth/auth.module'
+import { Project } from './modules/project/model/project.model'
+import { UserProject } from './modules/project/model/projectUser.model'
 import { FilesModule } from './modules/files/files.module'
 import { ServeStaticModule } from '@nestjs/serve-static'
 import * as path from 'path'
+
 import { Team } from './modules/teams/model/teams.model'
 import { TeamsModule } from './modules/teams/teams.module'
+import { ProjectModule } from './modules/project/project.module'
+import { Client } from './modules/clients/model/client.model'
 
 @Module({
     controllers: [],
@@ -36,12 +42,17 @@ import { TeamsModule } from './modules/teams/teams.module'
                     rejectUnauthorized: false,
                 },
             },
-            models: [User, Role, Team],
+
+            models: [User, Role, Project, UserProject, Client, Team],
+          
             autoLoadModels: true,
             synchronize: true,
         }),
         UsersModule,
+        ClientModule,
         RolesModule,
+        ClientModule,
+        ProjectModule,
         AuthModule,
         FilesModule,
         TeamsModule,
