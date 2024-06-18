@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { IsString } from 'class-validator'
 
-export class CreateTeamDto {
+export class TeamDto {
     @ApiProperty({ example: 'Крутая команда', description: 'Название команды' })
     @IsString({ message: 'Должно быть строкой' })
     readonly title: string

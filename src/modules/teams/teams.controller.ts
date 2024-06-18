@@ -11,11 +11,10 @@ import {
     UseInterceptors,
 } from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express'
-import { CreateTeamDto } from './dto/create-team.dto'
+import { TeamDto } from './dto/team.dto'
 import { TeamsService } from './teams.service'
 import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger'
 import { Team } from './model/teams.model'
-import { ChangeTeamDateDto } from './dto/change-team.dto'
 import { Roles } from 'src/decorators/roles-auth.decorator'
 import { RolesGuard } from 'src/guards/roles.guard'
 
@@ -24,50 +23,53 @@ export class TeamsController {
     constructor(private teamsService: TeamsService) {}
 
     @ApiOperation({ summary: 'Создать команду' })
-    @ApiResponse({ status: 200 })
-    @Roles('TEACHER')
+    @ApiResponse({ status: 200, type: Team })
+    @Roles('ADMIN')
     @ApiBearerAuth('JWT-auth')
     @UseGuards(RolesGuard)
     @Post()
     @UseInterceptors(FileInterceptor('image'))
-    createTeam(@Body() dto: CreateTeamDto, @UploadedFile() image) {
+    createTeam(@Body() dto: TeamDto, @UploadedFile() image) {
         return this.teamsService.createTeam(dto, image)
     }
 
     @ApiOperation({ summary: 'Получить все команды' })
-    @ApiResponse({ status: 200, type: [Team] })
+    @ApiResponse({ status: 200, type: Team })
+    @Roles('ADMIN')
+    @ApiBearerAuth('JWT-auth')
+    @UseGuards(RolesGuard)
     @Get()
     getAll() {
         return this.teamsService.getAllTeams()
     }
 
     @ApiOperation({ summary: 'Получить команду по названию' })
-    @ApiResponse({ status: 200, type: [Team] })
+    @ApiResponse({ status: 200, type: Team })
+    @Roles('ADMIN')
+    @ApiBearerAuth('JWT-auth')
+    @UseGuards(RolesGuard)
     @Get('/title')
-    getTeamByTitle(@Body('title') title: string) {
+    getTeamByTitle(@Param('title') title: string) {
         return this.teamsService.getTeamByTitle(title)
     }
 
     @ApiOperation({ summary: 'Заменить название, описание, картинку' })
-    @ApiResponse({ status: 200 })
-    @Roles('TEACHER')
+    @ApiResponse({ status: 200, type: Team })
+    @Roles('ADMIN')
     @ApiBearerAuth('JWT-auth')
     @UseGuards(RolesGuard)
     @Put('/:id')
-    async changeTeamDate(
-        @Param('id') id: number,
-        @Body() dto: ChangeTeamDateDto
-    ) {
+    changeTeamDate(@Param('id') id: number, @Body() dto: TeamDto) {
         return this.teamsService.changeTeamDate(dto, id)
     }
 
     @ApiOperation({ summary: 'Удалить команду' })
-    @ApiResponse({ status: 200 })
-    @Roles('TEACHER')
+    @ApiResponse({ status: 200, type: Team })
+    @Roles('ADMIN')
     @ApiBearerAuth('JWT-auth')
     @UseGuards(RolesGuard)
     @Delete('/:id')
-    delTeam(@Param('id') id: number) {
-        return this.teamsService.delTeam(id)
+    deleteTeam(@Param('id') id: number) {
+        return this.teamsService.deleteTeam(id)
     }
 }

@@ -2,8 +2,7 @@ import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common'
 import { InjectModel } from '@nestjs/sequelize'
 import { Team } from './model/teams.model'
 import { FilesService } from '../files/files.service'
-import { CreateTeamDto } from './dto/create-team.dto'
-import { ChangeTeamDateDto } from './dto/change-team.dto'
+import { TeamDto } from './dto/team.dto'
 
 @Injectable()
 export class TeamsService {
@@ -32,7 +31,7 @@ export class TeamsService {
         return team
     }
 
-    async createTeam(dto: CreateTeamDto, image: any) {
+    async createTeam(dto: TeamDto, image: any) {
         const fileName = await this.fileService.createFile(image)
         const team = await this.teamRepository.create({
             ...dto,
@@ -41,7 +40,9 @@ export class TeamsService {
         return team
     }
 
-    async delTeam(id) {
+    async deleteTeam(
+        id: number
+    ): Promise<{ status: HttpStatus; message: string }> {
         const team = await this.teamRepository.findByPk(id)
         if (!team) {
             throw new HttpException('Team not found', HttpStatus.NOT_FOUND)
@@ -49,7 +50,10 @@ export class TeamsService {
         try {
             await team.destroy()
             Logger.log(`Team ${id} was deleted successfully`)
-            return { message: 'Team deleted successfully', team }
+            return {
+                status: HttpStatus.OK,
+                message: 'Team deleted successfully',
+            }
         } catch (error) {
             Logger.log(`Error deleting team with id ${id}: ${error.message}`)
             throw new HttpException(
@@ -59,7 +63,7 @@ export class TeamsService {
         }
     }
 
-    async changeTeamDate(dto: ChangeTeamDateDto, id) {
+    async changeTeamDate(dto: TeamDto, id: number): Promise<TeamDto> {
         const team = await this.teamRepository.findByPk(id)
         if (!team) {
             throw new HttpException(
@@ -67,18 +71,16 @@ export class TeamsService {
                 HttpStatus.INTERNAL_SERVER_ERROR
             )
         }
+        Object.assign(team, dto)
+        try {
+            await team.save()
+        } catch (error) {
+            throw new HttpException(
+                'Falied to update team',
+                HttpStatus.INTERNAL_SERVER_ERROR
+            )
+        }
 
-        if (dto.newTitle) {
-            team.title = dto.newTitle
-        }
-        if (dto.newDescription) {
-            team.description = dto.newDescription
-        }
-        await team.save()
-
-        return {
-            newTitle: dto.newTitle,
-            newDescription: dto.newDescription,
-        }
+        return team
     }
 }
