@@ -19,7 +19,7 @@ export class TeamsService {
         return teams
     }
 
-    async getTeamByTitle(title) {
+    async getTeamByTitle(title: string) {
         const team = await this.teamRepository.findOne({
             where: { title },
             include: { all: true },
@@ -27,7 +27,7 @@ export class TeamsService {
         return team
     }
 
-    async getTeamById(id) {
+    async getTeamById(id: number) {
         const team = await this.teamRepository.findOne({ where: { id } })
         return team
     }
