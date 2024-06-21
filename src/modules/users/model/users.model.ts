@@ -13,7 +13,6 @@ import { Auth, AuthDefault } from './auth.model'
 import { Project } from 'src/modules/project/model/project.model'
 import { UserProject } from 'src/modules/project/model/projectUser.model'
 
-
 interface UserCreationAttrs {
     email: string
     password: string
@@ -35,14 +34,12 @@ export class User extends Model<User, UserCreationAttrs> {
     @Column({ type: DataType.STRING, allowNull: true })
     email: string
 
-
     @Column({
         type: DataType.JSON,
         allowNull: false,
         defaultValue: AuthDefault,
     })
     auth: Auth
-
 
     @ForeignKey(() => Role)
     @Column({ type: DataType.INTEGER })

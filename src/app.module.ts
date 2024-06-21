@@ -44,7 +44,7 @@ import { Client } from './modules/clients/model/client.model'
             },
 
             models: [User, Role, Project, UserProject, Client, Team],
-          
+
             autoLoadModels: true,
             synchronize: true,
         }),
