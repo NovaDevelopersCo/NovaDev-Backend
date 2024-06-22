@@ -53,13 +53,13 @@ export class TeamsController {
         return this.teamsService.getTeamByTitle(title)
     }
 
-    @ApiOperation({ summary:"Получение комады по айди"})
-    @ApiResponse({ status:200, type: Team })
-    @Roles("ADMIN")
-    @ApiBearerAuth("JWT-auth")
+    @ApiOperation({ summary: 'Получение комады по айди' })
+    @ApiResponse({ status: 200, type: Team })
+    @Roles('ADMIN')
+    @ApiBearerAuth('JWT-auth')
     @UseGuards(RolesGuard)
-    @Get("/:id")
-    getTeamById(@Param("id")id:number) {
+    @Get('/:id')
+    getTeamById(@Param('id') id: number) {
         return this.teamsService.getTeamById(id)
     }
 
