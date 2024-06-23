@@ -17,6 +17,7 @@ import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger'
 import { Team } from './model/teams.model'
 import { Roles } from 'src/decorators/roles-auth.decorator'
 import { RolesGuard } from 'src/guards/roles.guard'
+import { InteractionTeamDto } from './model/interaction-team.dto'
 
 @Controller('teams')
 export class TeamsController {
@@ -51,6 +52,26 @@ export class TeamsController {
     @Get('/title')
     getTeamByTitle(@Param('title') title: string) {
         return this.teamsService.getTeamByTitle(title)
+    }
+
+    @ApiOperation({ summary: 'Добавить пользователя в команду' })
+    @ApiResponse({ status: 200, type: Team })
+    @Roles('ADMIN')
+    @ApiBearerAuth('JWT-auth')
+    @UseGuards(RolesGuard)
+    @Post('/add')
+    addUserToTeam(@Body() dto: InteractionTeamDto) {
+        return this.teamsService.addUserToTeam(dto.teamId, dto.userId)
+    }
+
+    @ApiOperation({ summary: 'Удалить пользователя из команды' })
+    @ApiResponse({ status: 200, type: Team })
+    @Roles('ADMIN')
+    @ApiBearerAuth('JWT-auth')
+    @UseGuards(RolesGuard)
+    @Post('/cut')
+    cutUserToTeam(@Body() dto: InteractionTeamDto) {
+        return this.teamsService.cutUserToTeam(dto.userId, dto.teamId)
     }
 
     @ApiOperation({ summary: 'Получение комады по айди' })
