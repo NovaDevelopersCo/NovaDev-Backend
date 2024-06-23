@@ -17,7 +17,7 @@ import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger'
 import { Team } from './model/teams.model'
 import { Roles } from 'src/decorators/roles-auth.decorator'
 import { RolesGuard } from 'src/guards/roles.guard'
-import { InteractionTeamDto } from './model/interaction-team.dto'
+import { InteractionTeamDto } from './dto/interaction-team.dto'
 
 @Controller('teams')
 export class TeamsController {
