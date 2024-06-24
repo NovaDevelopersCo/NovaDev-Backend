@@ -2,13 +2,17 @@ import { HttpStatus, Injectable, HttpException, Logger } from '@nestjs/common'
 import { User } from './model/users.model'
 import { InjectModel } from '@nestjs/sequelize'
 import { RolesService } from '../roles/roles.service'
-import * as bcrypt from 'bcryptjs'
+
 import { ChangeUserDateDto } from './dto/change-user.dto'
+import * as bcrypt from 'bcryptjs'
+import { TeamsService } from '../teams/teams.service'
+
 @Injectable()
 export class UsersService {
     constructor(
         @InjectModel(User) private userRepository: typeof User,
-        private roleService: RolesService
+        private roleService: RolesService,
+        private teamService: TeamsService
     ) {}
     async getAllUsers() {
         const users = await this.userRepository.findAll({
@@ -72,6 +76,12 @@ export class UsersService {
         const role = await this.roleService.getRoleByTitle('SUPER_ADMIN')
         if (user && role) {
             user.roleId = role.id
+            await user.save()
+        }
+
+        const team = await this.teamService.getTeamByTitle('Cool Team')
+        if (user && team) {
+            user.teamId = team.id
             await user.save()
         }
 
