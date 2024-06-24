@@ -12,6 +12,9 @@ import { UserProject } from './modules/project/model/projectUser.model'
 import { FilesModule } from './modules/files/files.module'
 import { ServeStaticModule } from '@nestjs/serve-static'
 import * as path from 'path'
+
+import { Team } from './modules/teams/model/teams.model'
+import { TeamsModule } from './modules/teams/teams.module'
 import { ProjectModule } from './modules/project/project.module'
 import { Client } from './modules/clients/model/client.model'
 
@@ -39,7 +42,9 @@ import { Client } from './modules/clients/model/client.model'
                     rejectUnauthorized: false,
                 },
             },
-            models: [User, Role, Project, UserProject, Client],
+
+            models: [User, Role, Project, UserProject, Client, Team],
+
             autoLoadModels: true,
             synchronize: true,
         }),
@@ -50,6 +55,7 @@ import { Client } from './modules/clients/model/client.model'
         ProjectModule,
         AuthModule,
         FilesModule,
+        TeamsModule,
     ],
 })
 export class AppModule {}

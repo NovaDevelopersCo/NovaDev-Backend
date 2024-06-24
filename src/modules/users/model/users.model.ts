@@ -8,6 +8,7 @@ import {
     BelongsToMany,
 } from 'sequelize-typescript'
 import { Role } from 'src/modules/roles/model/roles.model'
+import { Team } from 'src/modules/teams/model/teams.model'
 import { Auth, AuthDefault } from './auth.model'
 import { Project } from 'src/modules/project/model/project.model'
 import { UserProject } from 'src/modules/project/model/projectUser.model'
@@ -46,6 +47,13 @@ export class User extends Model<User, UserCreationAttrs> {
 
     @BelongsTo(() => Role)
     role: Role
+
+    @ForeignKey(() => Team)
+    @Column({ type: DataType.INTEGER })
+    teamId: number
+
+    @BelongsTo(() => Team)
+    team: Team
 
     @BelongsToMany(() => Project, () => UserProject)
     projects: Project[]

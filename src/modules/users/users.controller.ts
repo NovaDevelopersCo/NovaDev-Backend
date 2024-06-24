@@ -67,6 +67,7 @@ export class UsersController {
     createUser() {
         return this.userService.createUser()
     }
+
     @ApiOperation({ summary: 'Удалить Пользывателя' })
     @ApiResponse({ status: 200 })
     @Roles('ADMIN')
