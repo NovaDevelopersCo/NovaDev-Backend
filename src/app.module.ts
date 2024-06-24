@@ -17,6 +17,7 @@ import { Team } from './modules/teams/model/teams.model'
 import { TeamsModule } from './modules/teams/teams.module'
 import { ProjectModule } from './modules/project/project.module'
 import { Client } from './modules/clients/model/client.model'
+import { BotModule } from './modules/bot/bot.module'
 
 @Module({
     controllers: [],
@@ -48,9 +49,11 @@ import { Client } from './modules/clients/model/client.model'
             autoLoadModels: true,
             synchronize: true,
         }),
+
         UsersModule,
         ClientModule,
         RolesModule,
+        BotModule,
         ClientModule,
         ProjectModule,
         AuthModule,
