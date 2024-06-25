@@ -6,6 +6,7 @@ import {
     Param,
     Post,
     Put,
+    Request,
     UseGuards,
 } from '@nestjs/common'
 import { UsersService } from './users.service'
@@ -19,6 +20,8 @@ import { User } from './model/users.model'
 import { RolesGuard } from 'src/guards/roles.guard'
 import { Roles } from 'src/decorators/roles-auth.decorator'
 import { ChangeUserDateDto } from './dto/change-user.dto'
+import { JwtAuthGuard } from 'src/guards/JwtAuth.guard'
+import { ChangeMyselfDateDto } from './dto/change-myself.dto'
 
 @ApiTags('Пользователи')
 @Controller('users')
@@ -45,7 +48,19 @@ export class UsersController {
         return this.userService.getUserByEmail(email)
     }
 
-    @ApiOperation({ summary: 'Замена роли, email, пароля, тарифа' })
+    @ApiOperation({ summary: 'Замена информации самим пользователем' })
+    @ApiResponse({ status: 200 })
+    @ApiBearerAuth('JWT-auth')
+    @Roles('ADMIN')
+    @UseGuards(JwtAuthGuard)
+    @UseGuards(RolesGuard)
+    @Put('/me')
+    async changeMyselfDate(@Body() dto: ChangeMyselfDateDto, @Request() req) {
+        const userId = req.user.id
+        return this.userService.changeMyselfDate(dto, userId)
+    }
+
+    @ApiOperation({ summary: 'Замена роли, email, пароля' })
     @ApiResponse({ status: 200 })
     @ApiBearerAuth('JWT-auth')
     @Roles('ADMIN')

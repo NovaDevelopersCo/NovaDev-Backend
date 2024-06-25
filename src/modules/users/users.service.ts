@@ -6,6 +6,7 @@ import { RolesService } from '../roles/roles.service'
 import { ChangeUserDateDto } from './dto/change-user.dto'
 import * as bcrypt from 'bcryptjs'
 import { TeamsService } from '../teams/teams.service'
+import { ChangeMyselfDateDto } from './dto/change-myself.dto'
 
 @Injectable()
 export class UsersService {
@@ -23,12 +24,15 @@ export class UsersService {
         return users
     }
 
-    async getUserByEmail(email) {
+    async getUserByEmail(private_nickname) {
         const user = await this.userRepository.findOne({
-            where: { email },
+            where: {
+                'auth.private_nickname': private_nickname,
+            },
             include: { all: true },
+            attributes: { exclude: ['auth'] },
         })
-        Logger.log('User with email: ' + user.email + 'got')
+        Logger.log('User with email: ' + user.auth.private_nickname + 'got')
         return user
     }
 
@@ -57,7 +61,7 @@ export class UsersService {
             },
             include: { all: true },
         })
-        Logger.log('User with email: ' + user.email + 'got')
+        Logger.log('User with email: ' + user.auth.private_nickname + 'got')
         return user
     }
 
@@ -94,6 +98,23 @@ export class UsersService {
         return credential
     }
 
+    async changeMyselfDate(dto: ChangeMyselfDateDto, userId: number) {
+        const user = await this.userRepository.findByPk(userId)
+        if (!user) {
+            throw new HttpException('User not found', HttpStatus.NOT_FOUND)
+        }
+        Object.assign(user.info, dto)
+        try {
+            await user.save()
+        } catch (error) {
+            throw new HttpException(
+                'Failed to update project',
+                HttpStatus.INTERNAL_SERVER_ERROR
+            )
+        }
+        return { status: HttpStatus.OK, massege: 'successful' }
+    }
+
     async changeUserDate(dto: ChangeUserDateDto, id) {
         const user = await this.userRepository.findByPk(id)
         if (!user) {
@@ -104,7 +125,7 @@ export class UsersService {
         }
 
         if (dto.newEmail) {
-            user.email = dto.newEmail
+            user.auth.private_nickname = dto.newEmail
         }
         if (dto.newPassword) {
             const hashPassword = await bcrypt.hash(dto.newPassword, 10)
