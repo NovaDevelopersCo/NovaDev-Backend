@@ -108,7 +108,7 @@ export class UsersService {
         if (!user) {
             throw new HttpException('User not found', HttpStatus.NOT_FOUND)
         }
-        let updatedFields = { ...dto }
+        const updatedFields = { ...dto }
         if (imageUrl) {
             const uploadedImageUrl =
                 await this.uploadRepository.uploadFile(imageUrl)
