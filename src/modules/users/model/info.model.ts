@@ -6,6 +6,7 @@ interface InfoAttrs {
     payment_info: string
     tg: string
     phone: string
+    image: string
 }
 
 export class Info implements InfoAttrs {
@@ -16,6 +17,7 @@ export class Info implements InfoAttrs {
     payment_info: string
     tg: string
     phone: string
+    image: string
 }
 
 export const InfoDefault: InfoAttrs = {
@@ -26,4 +28,5 @@ export const InfoDefault: InfoAttrs = {
     payment_info: null,
     tg: null,
     phone: null,
+    image: null,
 }

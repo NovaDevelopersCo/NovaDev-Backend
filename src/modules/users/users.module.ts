@@ -11,6 +11,7 @@ import { TeamsModule } from '../teams/teams.module'
 import { Project } from '../project/model/project.model'
 import { UserProject } from '../project/model/projectUser.model'
 import { ProjectModule } from '../project/project.module'
+import { UploadModule } from '../upload/upload.module'
 
 @Module({
     controllers: [UsersController],
@@ -19,6 +20,7 @@ import { ProjectModule } from '../project/project.module'
         SequelizeModule.forFeature([User, Role, UserProject, Project, Team]),
         RolesModule,
         TeamsModule,
+        UploadModule,
         forwardRef(() => ProjectModule),
         forwardRef(() => AuthModule),
     ],

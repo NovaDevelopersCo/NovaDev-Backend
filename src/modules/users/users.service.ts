@@ -7,13 +7,15 @@ import { ChangeUserDateDto } from './dto/change-user.dto'
 import * as bcrypt from 'bcryptjs'
 import { TeamsService } from '../teams/teams.service'
 import { ChangeMyselfDateDto } from './dto/change-myself.dto'
+import { UploadService } from '../upload/upload.service'
 
 @Injectable()
 export class UsersService {
     constructor(
         @InjectModel(User) private userRepository: typeof User,
         private roleService: RolesService,
-        private teamService: TeamsService
+        private teamService: TeamsService,
+        private uploadRepository: UploadService
     ) {}
     async getAllUsers() {
         const users = await this.userRepository.findAll({
@@ -24,13 +26,12 @@ export class UsersService {
         return users
     }
 
-    async getUserByEmail(private_nickname) {
+    async getUserByEmail(email) {
         const user = await this.userRepository.findOne({
             where: {
-                'auth.private_nickname': private_nickname,
+                'auth.private_nickname': email,
             },
             include: { all: true },
-            attributes: { exclude: ['auth'] },
         })
         Logger.log('User with email: ' + user.auth.private_nickname + 'got')
         return user
@@ -98,21 +99,36 @@ export class UsersService {
         return credential
     }
 
-    async changeMyselfDate(dto: ChangeMyselfDateDto, userId: number) {
+    async changeMyselfDate(
+        dto: ChangeMyselfDateDto,
+        userId: number,
+        imageUrl?: any
+    ): Promise<User> {
         const user = await this.userRepository.findByPk(userId)
         if (!user) {
             throw new HttpException('User not found', HttpStatus.NOT_FOUND)
         }
-        Object.assign(user.info, dto)
+        let updatedFields = { ...dto }
+        if (imageUrl) {
+            const uploadedImageUrl =
+                await this.uploadRepository.uploadFile(imageUrl)
+            updatedFields['image'] = uploadedImageUrl
+        }
+
         try {
-            await user.save()
+            await this.userRepository.update(
+                { info: { ...user.info, ...updatedFields } },
+                { where: { id: userId } }
+            )
+
+            const updatedUser = await this.userRepository.findByPk(userId)
+            return updatedUser
         } catch (error) {
             throw new HttpException(
-                'Failed to update project',
+                'Failed to update user',
                 HttpStatus.INTERNAL_SERVER_ERROR
             )
         }
-        return { status: HttpStatus.OK, massege: 'successful' }
     }
 
     async changeUserDate(dto: ChangeUserDateDto, id) {

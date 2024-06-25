@@ -4,15 +4,15 @@ import { TeamsService } from './teams.service'
 import { SequelizeModule } from '@nestjs/sequelize'
 import { User } from '../users/model/users.model'
 import { Team } from './model/teams.model'
-import { FilesModule } from '../files/files.module'
 import { AuthModule } from '../auth/auth.module'
+import { UploadModule } from '../upload/upload.module'
 
 @Module({
     providers: [TeamsService],
     controllers: [TeamsController],
     imports: [
+        UploadModule,
         SequelizeModule.forFeature([User, Team]),
-        FilesModule,
         forwardRef(() => AuthModule),
     ],
     exports: [TeamsService],
