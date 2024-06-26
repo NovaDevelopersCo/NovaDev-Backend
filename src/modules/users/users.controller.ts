@@ -54,7 +54,6 @@ export class UsersController {
     @ApiOperation({ summary: 'Замена информации самим пользователем' })
     @ApiResponse({ status: 200 })
     @ApiBearerAuth('JWT-auth')
-    @Roles('ADMIN')
     @UseGuards(JwtAuthGuard)
     @UseGuards(RolesGuard)
     @Put('/me')
@@ -83,6 +82,9 @@ export class UsersController {
 
     @Post('/createUser')
     @ApiOperation({ summary: 'Создать пользователя' })
+    @Roles('ADMIN')
+    @ApiBearerAuth('JWT-auth')
+    @UseGuards(RolesGuard)
     @ApiResponse({ status: 200 })
     createUser() {
         return this.userService.createUser()
