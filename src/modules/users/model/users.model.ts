@@ -12,6 +12,7 @@ import { Team } from 'src/modules/teams/model/teams.model'
 import { Auth, AuthDefault } from './auth.model'
 import { Project } from 'src/modules/project/model/project.model'
 import { UserProject } from 'src/modules/project/model/projectUser.model'
+import { Info, InfoDefault } from './info.model'
 
 interface UserCreationAttrs {
     email: string
@@ -19,6 +20,7 @@ interface UserCreationAttrs {
     roleId: number
     projects: Project[]
     auth: Auth
+    info: Info
 }
 
 @Table({ tableName: 'users' })
@@ -31,15 +33,19 @@ export class User extends Model<User, UserCreationAttrs> {
     })
     id: number
 
-    @Column({ type: DataType.STRING, allowNull: true })
-    email: string
-
     @Column({
         type: DataType.JSON,
         allowNull: false,
         defaultValue: AuthDefault,
     })
     auth: Auth
+
+    @Column({
+        type: DataType.JSON,
+        allowNull: false,
+        defaultValue: InfoDefault,
+    })
+    info: Info
 
     @ForeignKey(() => Role)
     @Column({ type: DataType.INTEGER })

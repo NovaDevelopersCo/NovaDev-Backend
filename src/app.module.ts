@@ -1,3 +1,4 @@
+import { UploadModule } from './modules/upload/upload.module'
 import { ClientModule } from './modules/clients/clients.module'
 import { Module } from '@nestjs/common'
 import { SequelizeModule } from '@nestjs/sequelize'
@@ -9,7 +10,6 @@ import { Role } from './modules/roles/model/roles.model'
 import { AuthModule } from './modules/auth/auth.module'
 import { Project } from './modules/project/model/project.model'
 import { UserProject } from './modules/project/model/projectUser.model'
-import { FilesModule } from './modules/files/files.module'
 import { ServeStaticModule } from '@nestjs/serve-static'
 import * as path from 'path'
 
@@ -23,6 +23,7 @@ import { BotModule } from './modules/bot/bot.module'
     controllers: [],
     providers: [],
     imports: [
+        UploadModule,
         ConfigModule.forRoot({
             envFilePath: `.${process.env.NODE_ENV}.env`,
             isGlobal: true,
@@ -57,7 +58,6 @@ import { BotModule } from './modules/bot/bot.module'
         ClientModule,
         ProjectModule,
         AuthModule,
-        FilesModule,
         TeamsModule,
     ],
 })

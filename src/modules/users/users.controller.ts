@@ -6,7 +6,10 @@ import {
     Param,
     Post,
     Put,
+    Request,
+    UploadedFile,
     UseGuards,
+    UseInterceptors,
 } from '@nestjs/common'
 import { UsersService } from './users.service'
 import {
@@ -19,6 +22,9 @@ import { User } from './model/users.model'
 import { RolesGuard } from 'src/guards/roles.guard'
 import { Roles } from 'src/decorators/roles-auth.decorator'
 import { ChangeUserDateDto } from './dto/change-user.dto'
+import { JwtAuthGuard } from 'src/guards/JwtAuth.guard'
+import { ChangeMyselfDateDto } from './dto/change-myself.dto'
+import { FileInterceptor } from '@nestjs/platform-express'
 
 @ApiTags('Пользователи')
 @Controller('users')
@@ -45,7 +51,23 @@ export class UsersController {
         return this.userService.getUserByEmail(email)
     }
 
-    @ApiOperation({ summary: 'Замена роли, email, пароля, тарифа' })
+    @ApiOperation({ summary: 'Замена информации самим пользователем' })
+    @ApiResponse({ status: 200 })
+    @ApiBearerAuth('JWT-auth')
+    @UseGuards(JwtAuthGuard)
+    @UseGuards(RolesGuard)
+    @Put('/me')
+    @UseInterceptors(FileInterceptor('image'))
+    async changeMyselfDate(
+        @Body() dto: ChangeMyselfDateDto,
+        @Request() req,
+        @UploadedFile() imageUrl: any
+    ) {
+        const userId = req.user.id
+        return this.userService.changeMyselfDate(dto, userId, imageUrl)
+    }
+
+    @ApiOperation({ summary: 'Замена роли, email, пароля' })
     @ApiResponse({ status: 200 })
     @ApiBearerAuth('JWT-auth')
     @Roles('ADMIN')
@@ -60,10 +82,10 @@ export class UsersController {
 
     @Post('/createUser')
     @ApiOperation({ summary: 'Создать пользователя' })
-    @ApiResponse({ status: 200 })
-    @ApiBearerAuth('JWT-auth')
     @Roles('ADMIN')
+    @ApiBearerAuth('JWT-auth')
     @UseGuards(RolesGuard)
+    @ApiResponse({ status: 200 })
     createUser() {
         return this.userService.createUser()
     }
