@@ -1,15 +1,14 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common'
 import { InjectModel } from '@nestjs/sequelize'
 import { Team } from './model/teams.model'
-import { FilesService } from '../files/files.service'
 import { TeamDto } from './dto/team.dto'
 import { User } from '../users/model/users.model'
-
+import { UploadService } from '../upload/upload.service'
 @Injectable()
 export class TeamsService {
     constructor(
         @InjectModel(Team) private teamRepository: typeof Team,
-        private fileService: FilesService,
+        private UploadRepository: UploadService,
         @InjectModel(User) private userRepository: typeof User
     ) {}
 
@@ -94,12 +93,18 @@ export class TeamsService {
             message: 'successful',
         }
     }
-    async createTeam(dto: TeamDto, image: any) {
-        const fileName = await this.fileService.createFile(image)
+    async createTeam(dto: TeamDto, image: any): Promise<Team> {
+        let imageUrl: string = ''
+
+        if (image) {
+            imageUrl = await this.UploadRepository.uploadFile(image)
+        }
+
         const team = await this.teamRepository.create({
             ...dto,
-            image: fileName,
+            image: imageUrl,
         })
+
         return team
     }
 
@@ -126,20 +131,29 @@ export class TeamsService {
         }
     }
 
-    async changeTeamDate(dto: TeamDto, id: number): Promise<TeamDto> {
+    async changeTeamData(
+        dto: TeamDto,
+        id: number,
+        imageUrl?: any
+    ): Promise<Team> {
         const team = await this.teamRepository.findByPk(id)
         if (!team) {
-            throw new HttpException(
-                'Team not found',
-                HttpStatus.INTERNAL_SERVER_ERROR
-            )
+            throw new HttpException('Team not found', HttpStatus.NOT_FOUND)
         }
-        Object.assign(team, dto)
+
+        let image: string = ''
+
+        if (imageUrl) {
+            image = await this.UploadRepository.uploadFile(imageUrl)
+        }
+
+        Object.assign(team, dto, image ? { image } : {})
+
         try {
             await team.save()
         } catch (error) {
             throw new HttpException(
-                'Falied to update team',
+                'Failed to update team',
                 HttpStatus.INTERNAL_SERVER_ERROR
             )
         }

@@ -90,8 +90,13 @@ export class TeamsController {
     @ApiBearerAuth('JWT-auth')
     @UseGuards(RolesGuard)
     @Put('/:id')
-    changeTeamDate(@Param('id') id: number, @Body() dto: TeamDto) {
-        return this.teamsService.changeTeamDate(dto, id)
+    @UseInterceptors(FileInterceptor('image'))
+    changeTeamDate(
+        @Param('id') id: number,
+        @Body() dto: TeamDto,
+        @UploadedFile() imageUrl: any
+    ) {
+        return this.teamsService.changeTeamData(dto, id, imageUrl)
     }
 
     @ApiOperation({ summary: 'Удалить команду' })

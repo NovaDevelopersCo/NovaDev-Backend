@@ -6,13 +6,16 @@ import { RolesService } from '../roles/roles.service'
 import { ChangeUserDateDto } from './dto/change-user.dto'
 import * as bcrypt from 'bcryptjs'
 import { TeamsService } from '../teams/teams.service'
+import { ChangeMyselfDateDto } from './dto/change-myself.dto'
+import { UploadService } from '../upload/upload.service'
 
 @Injectable()
 export class UsersService {
     constructor(
         @InjectModel(User) private userRepository: typeof User,
         private roleService: RolesService,
-        private teamService: TeamsService
+        private teamService: TeamsService,
+        private uploadRepository: UploadService
     ) {}
     async getAllUsers() {
         const users = await this.userRepository.findAll({
@@ -25,10 +28,12 @@ export class UsersService {
 
     async getUserByEmail(email) {
         const user = await this.userRepository.findOne({
-            where: { email },
+            where: {
+                'auth.private_nickname': email,
+            },
             include: { all: true },
         })
-        Logger.log('User with email: ' + user.email + 'got')
+        Logger.log('User with email: ' + user.auth.private_nickname + 'got')
         return user
     }
 
@@ -57,7 +62,7 @@ export class UsersService {
             },
             include: { all: true },
         })
-        Logger.log('User with email: ' + user.email + 'got')
+        Logger.log('User with email: ' + user.auth.private_nickname + 'got')
         return user
     }
 
@@ -94,6 +99,38 @@ export class UsersService {
         return credential
     }
 
+    async changeMyselfDate(
+        dto: ChangeMyselfDateDto,
+        userId: number,
+        imageUrl?: any
+    ): Promise<User> {
+        const user = await this.userRepository.findByPk(userId)
+        if (!user) {
+            throw new HttpException('User not found', HttpStatus.NOT_FOUND)
+        }
+        const updatedFields = { ...dto }
+        if (imageUrl) {
+            const uploadedImageUrl =
+                await this.uploadRepository.uploadFile(imageUrl)
+            updatedFields['image'] = uploadedImageUrl
+        }
+
+        try {
+            await this.userRepository.update(
+                { info: { ...user.info, ...updatedFields } },
+                { where: { id: userId } }
+            )
+
+            const updatedUser = await this.userRepository.findByPk(userId)
+            return updatedUser
+        } catch (error) {
+            throw new HttpException(
+                'Failed to update user',
+                HttpStatus.INTERNAL_SERVER_ERROR
+            )
+        }
+    }
+
     async changeUserDate(dto: ChangeUserDateDto, id) {
         const user = await this.userRepository.findByPk(id)
         if (!user) {
@@ -104,7 +141,7 @@ export class UsersService {
         }
 
         if (dto.newEmail) {
-            user.email = dto.newEmail
+            user.auth.private_nickname = dto.newEmail
         }
         if (dto.newPassword) {
             const hashPassword = await bcrypt.hash(dto.newPassword, 10)
