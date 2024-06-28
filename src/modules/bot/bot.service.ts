@@ -7,7 +7,7 @@ export class BotService implements OnModuleInit {
     private bot: Telegram
 
     constructor() {
-        const token = process.env.TELEGRAM_TOKEN
+        const token = process.env.TRLRGRAM_TOKENDEV
         this.bot = new Telegram(token, { polling: true })
     }
 
@@ -34,11 +34,43 @@ export class BotService implements OnModuleInit {
 
     private async handleStartCommand(msg: Message) {
         const chatId = msg.chat.id
-        await Logger.log('User tap on /start')
-        await this.sendMessage(
-            chatId,
-            'Привет, это бот компании Bynary.it. Чтобы узнать команды, используйте /help'
-        )
+        const text = msg.text
+
+        if (text === '/start') {
+            await this.bot.sendMessage(
+                chatId,
+                'Ниже появится кнопка, чтобы зайти в CRM',
+                {
+                    reply_markup: {
+                        keyboard: [
+                            [
+                                {
+                                    text: 'Зайти в CRM',
+                                    web_app: { url: process.env.FRONTURL},
+                                },
+                            ],
+                        ],
+                    },
+                }
+            )
+
+            await this.bot.sendMessage(
+                chatId,
+                'CRM',
+                {
+                    reply_markup: {
+                        inline_keyboard: [
+                            [
+                                {
+                                    text: 'Посмотреть',
+                                    web_app: { url:  process.env.FRONTURL },
+                                },
+                            ],
+                        ],
+                    },
+                }
+            )
+        }
     }
 
     private async handleHelpCommand(msg: Message) {
