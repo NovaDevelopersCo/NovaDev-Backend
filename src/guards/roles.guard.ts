@@ -30,26 +30,52 @@ export class RolesGuard implements CanActivate {
             if (!requiredRole) {
                 return true
             }
+
             const req = context.switchToHttp().getRequest()
             const authHeader = req.headers.authorization
+
             if (!authHeader) {
-                throw new HttpException('Нет доступа', HttpStatus.UNAUTHORIZED)
+                throw new HttpException(
+                    'Пользыватель не авторизован',
+                    HttpStatus.UNAUTHORIZED
+                )
             }
+
             const bearer = authHeader.split(' ')[0]
             const token = authHeader.split(' ')[1]
 
             if (bearer !== 'Bearer' || !token) {
-                throw new UnauthorizedException({
-                    message: 'Пользователь не авторизован',
-                })
+                throw new HttpException(
+                    'Пользыватель не авторизован',
+                    HttpStatus.UNAUTHORIZED
+                )
             }
 
-            const user = this.jwtService.verify(token)
+            let user
+            try {
+                user = this.jwtService.verify(token)
+            } catch (error) {
+                throw new HttpException(
+                    'Пользыватель не авторизован',
+                    HttpStatus.UNAUTHORIZED
+                )
+            }
+
             req.user = user
-            return RolesLevel_access[requiredRole] <= user.role.level_access
-        } catch (e) {
-            console.log(e)
-            throw new HttpException('Нет доступа', HttpStatus.UNAUTHORIZED)
+
+            if (RolesLevel_access[requiredRole] <= user.role.level_access) {
+                return true
+            } else {
+                throw new HttpException('Нет доступа', HttpStatus.FORBIDDEN)
+            }
+        } catch (error) {
+            if (
+                error instanceof UnauthorizedException ||
+                error instanceof HttpException
+            ) {
+                throw error
+            }
+            throw new HttpException('Нет доступа', HttpStatus.FORBIDDEN)
         }
     }
 }

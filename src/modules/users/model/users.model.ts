@@ -21,6 +21,7 @@ interface UserCreationAttrs {
     projects: Project[]
     auth: Auth
     info: Info
+    tg_id?: string | null
 }
 
 @Table({ tableName: 'users' })
@@ -46,6 +47,9 @@ export class User extends Model<User, UserCreationAttrs> {
         defaultValue: InfoDefault,
     })
     info: Info
+
+    @Column({ type: DataType.STRING, unique: true, allowNull: true })
+    tg_id: string
 
     @ForeignKey(() => Role)
     @Column({ type: DataType.INTEGER })

@@ -1,13 +1,15 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common'
 import { Message } from 'node-telegram-bot-api'
 import Telegram = require('node-telegram-bot-api')
+import { WebAppService } from './service/webapp.service'
 
 @Injectable()
 export class BotService implements OnModuleInit {
     private bot: Telegram
+    private readonly logger = new Logger(BotService.name)
 
-    constructor() {
-        const token = process.env.TELEGRAM_TOKEN
+    constructor(private readonly webAppService: WebAppService) {
+        const token = process.env.TRLRGRAM_TOKENDEV
         this.bot = new Telegram(token, { polling: true })
     }
 
@@ -18,6 +20,7 @@ export class BotService implements OnModuleInit {
     private initBot() {
         this.bot.on('message', async (msg: Message) => {
             const text = msg.text
+            const chatId = msg.chat.id
 
             switch (text) {
                 case '/start':
@@ -27,18 +30,59 @@ export class BotService implements OnModuleInit {
                     await this.handleHelpCommand(msg)
                     break
                 default:
+                    if (msg?.web_app_data?.data) {
+                        try {
+                            await this.webAppService.agree(
+                                this.bot,
+                                chatId,
+                                msg
+                            )
+                        } catch (e) {
+                            this.logger.error(
+                                'Error processing web_app_data',
+                                e
+                            )
+                        }
+                    }
                     break
             }
         })
     }
-
     private async handleStartCommand(msg: Message) {
         const chatId = msg.chat.id
-        await Logger.log('User tap on /start')
-        await this.sendMessage(
-            chatId,
-            'Привет, это бот компании Bynary.it. Чтобы узнать команды, используйте /help'
-        )
+        const text = msg.text
+
+        if (text === '/start') {
+            await this.bot.sendMessage(
+                chatId,
+                'Ниже появится кнопка, чтобы зайти в CRM',
+                {
+                    reply_markup: {
+                        keyboard: [
+                            [
+                                {
+                                    text: 'Зайти в CRM',
+                                    web_app: { url: process.env.FRONTURL },
+                                },
+                            ],
+                        ],
+                    },
+                }
+            )
+
+            await this.bot.sendMessage(chatId, 'CRM', {
+                reply_markup: {
+                    inline_keyboard: [
+                        [
+                            {
+                                text: 'Посмотреть',
+                                web_app: { url: process.env.FRONTURL },
+                            },
+                        ],
+                    ],
+                },
+            })
+        }
     }
 
     private async handleHelpCommand(msg: Message) {

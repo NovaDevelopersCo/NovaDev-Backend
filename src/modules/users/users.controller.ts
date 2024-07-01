@@ -82,9 +82,7 @@ export class UsersController {
 
     @Post('/createUser')
     @ApiOperation({ summary: 'Создать пользователя' })
-    @Roles('ADMIN')
-    @ApiBearerAuth('JWT-auth')
-    @UseGuards(RolesGuard)
+
     @ApiResponse({ status: 200 })
     createUser() {
         return this.userService.createUser()
