@@ -7,7 +7,7 @@ export class BotService implements OnModuleInit {
     private bot: Telegram
 
     constructor() {
-        const token = process.env.TELEGRAM_TOKEN
+        const token = process.env.TELEGRAM_TOKENDEV
         this.bot = new Telegram(token, { polling: true })
     }
 
