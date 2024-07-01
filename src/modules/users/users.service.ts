@@ -76,6 +76,7 @@ export class UsersService {
                 password: hashPassword,
                 private_nickname: login,
             },
+            tg_id: null,
         })
 
         const role = await this.roleService.getRoleByTitle('SUPER_ADMIN')

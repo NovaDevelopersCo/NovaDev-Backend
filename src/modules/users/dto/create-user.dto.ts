@@ -18,4 +18,11 @@ export class CreateUserDto {
         required: false,
     })
     readonly roleId?: number
+
+    @ApiProperty({
+        example: '12345',
+        description: 'Id пользователя',
+        required: false,
+    })
+    readonly tg_id?: string
 }

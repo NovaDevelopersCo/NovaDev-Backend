@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { BotService } from './bot.service'
+import { BotService } from '../bot.service'
 import { Message } from 'node-telegram-bot-api'
 
 @Injectable()
