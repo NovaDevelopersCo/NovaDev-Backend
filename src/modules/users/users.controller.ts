@@ -51,6 +51,16 @@ export class UsersController {
         return this.userService.getUserByEmail(email)
     }
 
+    @ApiOperation({ summary: 'Получить пользователя по айди' })
+    @ApiResponse({ status: 200, type: [User] })
+    @Roles('ADMIN')
+    @ApiBearerAuth('JWT-auth')
+    @UseGuards(RolesGuard)
+    @Get('/:id')
+    getUserById(@Param('id') id: number) {
+        return this.userService.getUserById(+id)
+    }
+
     @ApiOperation({ summary: 'Замена информации самим пользователем' })
     @ApiResponse({ status: 200 })
     @ApiBearerAuth('JWT-auth')
@@ -82,7 +92,6 @@ export class UsersController {
 
     @Post('/createUser')
     @ApiOperation({ summary: 'Создать пользователя' })
-
     @ApiResponse({ status: 200 })
     createUser() {
         return this.userService.createUser()
