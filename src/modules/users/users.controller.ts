@@ -3,6 +3,7 @@ import {
     Controller,
     Delete,
     Get,
+    Logger,
     Param,
     Post,
     Put,
@@ -59,6 +60,17 @@ export class UsersController {
     @Get('/:id')
     getUserById(@Param('id') id: number) {
         return this.userService.getUserById(+id)
+    }
+
+    @ApiOperation({ summary: 'Замена информации самим пользователем' })
+    @ApiResponse({ status: 200 })
+    @ApiBearerAuth('JWT-auth')
+    @UseGuards(JwtAuthGuard)
+    @UseGuards(RolesGuard)
+    @Post('/me')
+    async getMe(@Request() req) {
+        const id = req.user.id
+        return this.userService.getUserById(id)
     }
 
     @ApiOperation({ summary: 'Замена информации самим пользователем' })
