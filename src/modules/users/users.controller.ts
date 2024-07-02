@@ -62,11 +62,10 @@ export class UsersController {
         return this.userService.getUserById(+id)
     }
 
-    @ApiOperation({ summary: 'Замена информации самим пользователем' })
+    @ApiOperation({ summary: 'Получения пользователя по токену' })
     @ApiResponse({ status: 200 })
     @ApiBearerAuth('JWT-auth')
     @UseGuards(JwtAuthGuard)
-    @UseGuards(RolesGuard)
     @Post('/me')
     async getMe(@Request() req) {
         const id = req.user.id
@@ -77,7 +76,6 @@ export class UsersController {
     @ApiResponse({ status: 200 })
     @ApiBearerAuth('JWT-auth')
     @UseGuards(JwtAuthGuard)
-    @UseGuards(RolesGuard)
     @Put('/me')
     @UseInterceptors(FileInterceptor('image'))
     async changeMyselfDate(
