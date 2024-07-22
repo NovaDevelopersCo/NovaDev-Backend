@@ -55,17 +55,34 @@ export class WebUserService {
                     [
                         {
                             text: 'Все мои задачи',
+                            web_app: {
+                                url:
+                                    process.env.URL + '/admin/autorization',
+                            },
+
                         },
                         {
                             text: 'Добавить задачу',
+                            web_app: {
+                                url:
+                                    process.env.URL + '/admin/autorization',
+                            },
                         },
                     ],
                     [
                         {
                             text: 'Изменить мой профиль',
+                            web_app: {
+                                url:
+                                    process.env.URL + '/admin/autorization',
+                            },
                         },
                         {
                             text: 'Показать мой профиль',
+                            web_app: {
+                                url:
+                                    process.env.URL + '/admin/autorization',
+                            },
                         },
                     ],
                 ],
