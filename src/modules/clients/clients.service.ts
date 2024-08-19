@@ -29,6 +29,7 @@ export class ClinetService {
         const client = await this.clientRepository.findOne({
             where: { name },
         })
+        console.log(client)
         return client
     }
 

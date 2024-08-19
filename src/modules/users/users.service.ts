@@ -63,14 +63,17 @@ export class UsersService {
         }
     }
 
-    async getUserAuthInfo(private_nickname) {
+    async getUserAuthInfo(private_nickname: string) {
         const user = await this.userRepository.findOne({
             where: {
                 'auth.private_nickname': private_nickname,
             },
             include: { all: true },
         })
-        Logger.log('User with email: ' + user.auth.private_nickname + 'got')
+
+        if (!user) {
+            throw new HttpException(`User not found`, HttpStatus.NOT_FOUND)
+        }
         return user
     }
 
@@ -87,7 +90,7 @@ export class UsersService {
             tg_id: null,
         })
 
-        const role = await this.roleService.getRoleByTitle('SUPER_ADMIN')
+        const role = await this.roleService.getRoleByTitle('USER')
         if (user && role) {
             user.roleId = role.id
             await user.save()

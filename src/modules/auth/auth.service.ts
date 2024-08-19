@@ -33,6 +33,10 @@ export class AuthService {
         const user = await this.userService.getUserAuthInfo(
             dto.private_nickname
         )
+        if (!user) {
+            Logger.log('User not found')
+            throw new UnauthorizedException({ message: 'User not found' })
+        }
         const passwordEquals = await bcrypt.compare(
             dto.password,
             user.auth.password

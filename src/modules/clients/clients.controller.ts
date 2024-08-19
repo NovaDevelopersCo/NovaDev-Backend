@@ -22,7 +22,7 @@ import { RolesGuard } from 'src/guards/roles.guard'
 import { InteractionClientDto } from './dto/interaction-client.dto'
 
 @ApiTags('Клиенты')
-@Controller('client')
+@Controller('clients')
 export class ClientController {
     constructor(private readonly clientService: ClinetService) {}
 
