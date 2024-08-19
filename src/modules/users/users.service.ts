@@ -96,12 +96,6 @@ export class UsersService {
             await user.save()
         }
 
-        const team = await this.teamService.getTeamByTitle('Cool Team')
-        if (user && team) {
-            user.teamId = team.id
-            await user.save()
-        }
-
         const credential = {
             login: login,
             password: plainPassword,
