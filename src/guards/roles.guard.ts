@@ -63,10 +63,10 @@ export class RolesGuard implements CanActivate {
 
             req.user = user
 
-            if (RolesLevel_access[requiredRole] <= user.role.level_access) {
-                return true
-            } else {
+            if (user.role.level_access < RolesLevel_access[requiredRole]) {
                 throw new HttpException('Нет доступа', HttpStatus.FORBIDDEN)
+            } else {
+                return true
             }
         } catch (error) {
             if (
