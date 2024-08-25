@@ -49,7 +49,16 @@ import { UserTag } from './modules/tags/model/tagsUser.model'
                 },
             },
 
-            models: [User, Role, Project, UserProject, Client, Team, Tags, UserTag],
+            models: [
+                User,
+                Role,
+                Project,
+                UserProject,
+                Client,
+                Team,
+                Tags,
+                UserTag,
+            ],
 
             autoLoadModels: true,
             synchronize: true,

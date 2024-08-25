@@ -73,7 +73,6 @@ export class User extends Model<User, UserCreationAttrs> {
     @ForeignKey(() => Project)
     ProjectId: number
 
-
     @BelongsToMany(() => Tags, () => UserTag)
     tags: Tags[]
 
