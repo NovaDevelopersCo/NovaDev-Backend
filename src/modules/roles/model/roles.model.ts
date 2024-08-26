@@ -23,11 +23,11 @@ export class Role extends Model<Role, RoleCreationAttrs> {
     title: string
 
     @ApiProperty({ example: 'Администратор', description: 'Описание роли' })
-    @Column({ type: DataType.STRING, allowNull: false })
+    @Column({ type: DataType.STRING(64000), allowNull: false })
     description: string
 
     @ApiProperty({ example: 3, description: 'Значение роли' })
-    @Column({ type: DataType.INTEGER, unique: true, allowNull: false })
+    @Column({ type: DataType.INTEGER, allowNull: false })
     level_access: number
 
     @HasMany(() => User)
