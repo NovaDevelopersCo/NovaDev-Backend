@@ -1,7 +1,7 @@
 export class ChangeUserDateDto {
-    readonly newEmail?: string
+    readonly email?: string
 
-    readonly newPassword?: string
+    readonly password?: string
 
-    readonly newRole?: string
+    readonly roleId?: number
 }

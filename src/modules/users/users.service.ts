@@ -145,16 +145,17 @@ export class UsersService {
                 HttpStatus.INTERNAL_SERVER_ERROR
             )
         }
+        console.log(dto)
 
-        if (dto.newEmail) {
-            user.auth.private_nickname = dto.newEmail
+        if (dto.email) {
+            user.auth.private_nickname = dto.email
         }
-        if (dto.newPassword) {
-            const hashPassword = await bcrypt.hash(dto.newPassword, 10)
+        if (dto.password) {
+            const hashPassword = await bcrypt.hash(dto.password, 10)
             user.auth.password = hashPassword
         }
-        if (dto.newRole) {
-            const role = await this.roleService.getRoleByTitle(dto.newRole)
+        if (dto.roleId) {
+            const role = await this.roleService.getRoleById(dto.roleId)
             if (role) {
                 user.roleId = role.id
             }
@@ -162,10 +163,6 @@ export class UsersService {
         Logger.log('User change successfully')
         await user.save()
 
-        return {
-            newEmail: dto.newEmail,
-            newPassword: dto.newPassword,
-            newRole: dto.newRole,
-        }
+        return user
     }
 }
