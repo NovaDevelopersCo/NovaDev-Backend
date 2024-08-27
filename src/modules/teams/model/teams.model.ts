@@ -20,7 +20,7 @@ export class Team extends Model<Team, TeamCreationAttrs> {
     id: number
 
     @ApiProperty({ example: 'Команда Крутых', description: 'Крутое название' })
-    @Column({ type: DataType.STRING, allowNull: false })
+    @Column({ type: DataType.STRING, allowNull: false, unique: true })
     title: string
 
     @ApiProperty({

@@ -11,7 +11,7 @@ import {
     UseInterceptors,
 } from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express'
-import { TeamDto } from './dto/team.dto'
+import { TeamDto } from './dto/create-team.dto'
 import { TeamsService } from './teams.service'
 import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger'
 import { Team } from './model/teams.model'
@@ -25,9 +25,9 @@ export class TeamsController {
 
     @ApiOperation({ summary: 'Создать команду' })
     @ApiResponse({ status: 200, type: Team })
-    @Roles('ADMIN')
-    @ApiBearerAuth('JWT-auth')
-    @UseGuards(RolesGuard)
+    // @Roles('ADMIN')
+    // @ApiBearerAuth('JWT-auth')
+    // @UseGuards(RolesGuard)
     @Post()
     @UseInterceptors(FileInterceptor('image'))
     createTeam(@Body() dto: TeamDto, @UploadedFile() image) {
@@ -49,7 +49,7 @@ export class TeamsController {
     @Roles('ADMIN')
     @ApiBearerAuth('JWT-auth')
     @UseGuards(RolesGuard)
-    @Get('/title')
+    @Get('/:title')
     getTeamByTitle(@Param('title') title: string) {
         return this.teamsService.getTeamByTitle(title)
     }

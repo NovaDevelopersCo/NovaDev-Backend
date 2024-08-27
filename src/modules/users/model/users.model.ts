@@ -13,8 +13,6 @@ import { Auth, AuthDefault } from './auth.model'
 import { Project } from 'src/modules/project/model/project.model'
 import { UserProject } from 'src/modules/project/model/projectUser.model'
 import { Info, InfoDefault } from './info.model'
-import { Tags } from 'src/modules/tags/model/tags.model'
-import { UserTag } from 'src/modules/tags/model/tagsUser.model'
 
 interface UserCreationAttrs {
     email: string
@@ -72,10 +70,4 @@ export class User extends Model<User, UserCreationAttrs> {
 
     @ForeignKey(() => Project)
     ProjectId: number
-
-    @BelongsToMany(() => Tags, () => UserTag)
-    tags: Tags[]
-
-    @ForeignKey(() => Tags)
-    tagId: number
 }
