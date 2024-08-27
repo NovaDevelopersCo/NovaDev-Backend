@@ -32,6 +32,9 @@ export class UsersService {
                 'auth.private_nickname': email,
             },
             include: { all: true },
+            attributes: {
+                exclude: ['auth'],
+            },
         })
         Logger.log('User with email: ' + user.auth.private_nickname + 'got')
         return user
@@ -40,6 +43,9 @@ export class UsersService {
     async getUserById(id: number) {
         const user = await this.userRepository.findByPk(id, {
             include: { all: true },
+            attributes: {
+                exclude: ['auth'],
+            },
         })
         Logger.log('User with id: ' + user.id + 'got')
         return user
@@ -110,7 +116,11 @@ export class UsersService {
         userId: number,
         imageUrl?: any
     ): Promise<User> {
-        const user = await this.userRepository.findByPk(userId)
+        const user = await this.userRepository.findByPk(userId, {
+            attributes: {
+                exclude: ['auth'],
+            },
+        })
         if (!user) {
             throw new HttpException('User not found', HttpStatus.NOT_FOUND)
         }
@@ -127,7 +137,11 @@ export class UsersService {
                 { where: { id: userId } }
             )
 
-            const updatedUser = await this.userRepository.findByPk(userId)
+            const updatedUser = await this.userRepository.findByPk(userId, {
+                attributes: {
+                    exclude: ['auth'],
+                },
+            })
             return updatedUser
         } catch (error) {
             throw new HttpException(
