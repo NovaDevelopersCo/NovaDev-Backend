@@ -34,9 +34,9 @@ export class UsersController {
 
     @ApiOperation({ summary: 'Получить всех пользователей' })
     @ApiResponse({ status: 200, type: [User] })
-    @Roles('ADMIN')
-    @ApiBearerAuth('JWT-auth')
-    @UseGuards(RolesGuard)
+    // @Roles('ADMIN')
+    // @ApiBearerAuth('JWT-auth')
+    // @UseGuards(RolesGuard)
     @Get()
     getAll() {
         return this.userService.getAllUsers()
@@ -54,9 +54,9 @@ export class UsersController {
 
     @ApiOperation({ summary: 'Получить пользователя по айди' })
     @ApiResponse({ status: 200, type: [User] })
-    @Roles('ADMIN')
-    @ApiBearerAuth('JWT-auth')
-    @UseGuards(RolesGuard)
+    // @Roles('ADMIN')
+    // @ApiBearerAuth('JWT-auth')
+    // @UseGuards(RolesGuard)
     @Get('/:id')
     getUserById(@Param('id') id: number) {
         return this.userService.getUserById(+id)

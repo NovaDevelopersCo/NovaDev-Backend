@@ -1,7 +1,13 @@
-import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common'
+import {
+    ConflictException,
+    HttpException,
+    HttpStatus,
+    Injectable,
+    Logger,
+} from '@nestjs/common'
 import { InjectModel } from '@nestjs/sequelize'
 import { Team } from './model/teams.model'
-import { TeamDto } from './dto/team.dto'
+import { TeamDto } from './dto/create-team.dto'
 import { User } from '../users/model/users.model'
 import { UploadService } from '../upload/upload.service'
 @Injectable()
@@ -24,11 +30,17 @@ export class TeamsService {
             where: { title },
             include: { all: true },
         })
+        if (!team) {
+            throw new HttpException('Team not found', HttpStatus.NOT_FOUND)
+        }
         return team
     }
 
     async getTeamById(id: number) {
         const team = await this.teamRepository.findOne({ where: { id } })
+        if (!team) {
+            throw new HttpException('Team not found', HttpStatus.NOT_FOUND)
+        }
         return team
     }
 
@@ -56,7 +68,7 @@ export class TeamsService {
         await user.save()
 
         Logger.log(`User with ID ${userId} added to team with ID ${teamId}`)
-        return { status: HttpStatus.OK, message: 'successfully' }
+        return { status: HttpStatus.CREATED, message: 'successful' }
     }
     В
 
@@ -80,7 +92,7 @@ export class TeamsService {
                 `User with ID ${userId} does not have team with ID ${teamId}`
             )
             return {
-                status: HttpStatus.CONFLICT,
+                status: HttpStatus.NOT_FOUND,
                 message: 'failed',
             }
         }
@@ -100,12 +112,21 @@ export class TeamsService {
             imageUrl = await this.UploadRepository.uploadFile(image)
         }
 
-        const team = await this.teamRepository.create({
-            ...dto,
-            image: imageUrl,
-        })
+        try {
+            const team = await this.teamRepository.create({
+                ...dto,
+                image: imageUrl,
+            })
 
-        return team
+            return team
+        } catch (error) {
+            if (error.name === 'SequelizeUniqueConstraintError') {
+                throw new ConflictException(
+                    'Команда с таким названием уже существует.'
+                )
+            }
+            throw error
+        }
     }
 
     async deleteTeam(
