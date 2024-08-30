@@ -28,19 +28,12 @@ export class ProjectController {
 
     @ApiOperation({ summary: 'Создание Проекта' })
     @ApiResponse({ status: 200, type: Project })
-
-    @Post()
-    create(@Body() dto: CreateProjectDto) {
-        return this.projectService.createProject(dto)
-    }
-
-    @ApiOperation({ summary: 'Получение проекта по названию' })
-    @ApiResponse({ status: 200, type: Project })
     @Roles('ADMIN')
     @UseGuards(RolesGuard)
     @Get('/:title')
-    getBytitle(@Param('title') title: string) {
-        return this.projectService.getProjectByTitle(title)
+    @Post()
+    create(@Body() dto: CreateProjectDto) {
+        return this.projectService.createProject(dto)
     }
 
     @ApiOperation({ summary: 'Получение проекта по айди' })
