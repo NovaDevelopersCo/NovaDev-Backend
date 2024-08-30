@@ -34,16 +34,6 @@ export class ClientController {
     create(@Body() dto: CreateClientDto) {
         return this.clientService.createClinet(dto)
     }
-
-    @ApiOperation({ summary: 'Получение клиента по имени' })
-    @ApiResponse({ status: 200, type: Client })
-    @Roles('ADMIN')
-    @UseGuards(RolesGuard)
-    @Get('/:name')
-    getBytitle(@Param('name') name: string) {
-        return this.clientService.getClientByName(name)
-    }
-
     @ApiOperation({ summary: 'Получение клиента по айди' })
     @ApiResponse({ status: 200, type: Client })
     @Roles('ADMIN')
