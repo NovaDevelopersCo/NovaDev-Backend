@@ -44,16 +44,6 @@ export class TeamsController {
         return this.teamsService.getAllTeams()
     }
 
-    @ApiOperation({ summary: 'Получить команду по названию' })
-    @ApiResponse({ status: 200, type: Team })
-    @Roles('ADMIN')
-    @ApiBearerAuth('JWT-auth')
-    @UseGuards(RolesGuard)
-    @Get('/:title')
-    getTeamByTitle(@Param('title') title: string) {
-        return this.teamsService.getTeamByTitle(title)
-    }
-
     @ApiOperation({ summary: 'Добавить пользователя в команду' })
     @ApiResponse({ status: 200, type: Team })
     @Roles('ADMIN')
