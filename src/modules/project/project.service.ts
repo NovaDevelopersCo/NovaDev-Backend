@@ -1,4 +1,10 @@
-import { HttpStatus, Injectable, HttpException, Logger } from '@nestjs/common'
+import {
+    HttpStatus,
+    Injectable,
+    HttpException,
+    Logger,
+    BadRequestException,
+} from '@nestjs/common'
 import { InjectModel } from '@nestjs/sequelize'
 import { User } from '../users/model/users.model'
 import { Project } from './model/project.model'
@@ -25,20 +31,25 @@ export class ProjectService {
         return projects
     }
 
-    async getProjectByTitle(title: string) {
-        const project = await this.projectRepository.findOne({
-            where: { title },
-        })
-        return project
-    }
-
     async getProjectById(id: number) {
+        if (id > Number.MAX_SAFE_INTEGER) {
+            throw new BadRequestException('Invalid ID.')
+        }
         const project = await this.projectRepository.findOne({ where: { id } })
+        if (!project) {
+            throw new HttpException('Project not found', HttpStatus.NOT_FOUND)
+        }
         return project
     }
 
     async deleteProject(id: number) {
-        await this.projectRepository.destroy({ where: { id } })
+        if (id > Number.MAX_SAFE_INTEGER) {
+            throw new BadRequestException('Invalid ID.')
+        }
+        const project = await this.projectRepository.destroy({ where: { id } })
+        if (!project) {
+            throw new HttpException('Project not found', HttpStatus.NOT_FOUND)
+        }
         return { status: HttpStatus.OK, message: 'Project deleted' }
     }
 

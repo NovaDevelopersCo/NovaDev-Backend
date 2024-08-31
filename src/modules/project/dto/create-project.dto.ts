@@ -1,10 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { IsArray, IsNotEmpty, IsString } from 'class-validator'
+import { ArrayNotEmpty, IsArray, IsNotEmpty, IsString } from 'class-validator'
 import { Client } from 'src/modules/clients/model/client.model'
+import { IsNotWhitespace } from 'src/pipes/spaces-validation.pipe'
 
 export class CreateProjectDto {
-    @IsNotEmpty({ message: 'Название команды обязательно' })
-    @IsString({ message: 'Название команды должно быть строкой' })
+    @IsNotEmpty({ message: 'Название проекта обязательно' })
+    @IsString({ message: 'Название проекта должно быть строкой' })
     @ApiProperty({
         example: 'Пирамида',
         description: 'Название Проекта',
@@ -12,6 +13,7 @@ export class CreateProjectDto {
     title: string
 
     @IsNotEmpty({ message: 'Технологии обязательны' })
+    @ArrayNotEmpty({ message: 'Технологии обязательны' })
     @IsArray({ message: 'Технологии должны быть массивом' })
     @ApiProperty({
         example: ['NestJS', 'TypeORM'],
@@ -37,7 +39,8 @@ export class CreateProjectDto {
     })
     documentation: string
 
-    @IsString({ message: 'Название команды должно быть строкой' })
+    @IsString({ message: 'Название проекта должно быть строкой' })
+    @IsNotEmpty({ message: 'Дедлайн должен был заполнен обязательно' })
     @ApiProperty({
         example: '10.03.2006',
         description: 'Дедлайн проекта',

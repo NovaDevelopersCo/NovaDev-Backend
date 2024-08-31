@@ -1,4 +1,10 @@
-import { HttpStatus, Injectable, HttpException, Logger } from '@nestjs/common'
+import {
+    HttpStatus,
+    Injectable,
+    HttpException,
+    Logger,
+    BadRequestException,
+} from '@nestjs/common'
 import { InjectModel } from '@nestjs/sequelize'
 import { Client } from './model/client.model'
 import { CreateClientDto } from './dto/create-client.dto'
@@ -34,12 +40,24 @@ export class ClinetService {
     }
 
     async getClientById(id: number) {
+        if (id > Number.MAX_SAFE_INTEGER) {
+            throw new BadRequestException('Invalid ID.')
+        }
         const client = await this.clientRepository.findOne({ where: { id } })
+        if (!client) {
+            throw new HttpException('Client not found', HttpStatus.NOT_FOUND)
+        }
         return client
     }
 
     async deleteClient(id: number) {
-        await this.clientRepository.destroy({ where: { id } })
+        if (id > Number.MAX_SAFE_INTEGER) {
+            throw new BadRequestException('Invalid ID.')
+        }
+        const client = await this.clientRepository.destroy({ where: { id } })
+        if (!client) {
+            throw new HttpException('Client not found', HttpStatus.NOT_FOUND)
+        }
         return { status: HttpStatus.OK, message: 'Client deleted' }
     }
     async addClientToProject(

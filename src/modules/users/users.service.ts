@@ -1,4 +1,10 @@
-import { HttpStatus, Injectable, HttpException, Logger } from '@nestjs/common'
+import {
+    HttpStatus,
+    Injectable,
+    HttpException,
+    Logger,
+    BadRequestException,
+} from '@nestjs/common'
 import { User } from './model/users.model'
 import { InjectModel } from '@nestjs/sequelize'
 import { RolesService } from '../roles/roles.service'
@@ -36,22 +42,34 @@ export class UsersService {
                 exclude: ['auth'],
             },
         })
+        if (!user) {
+            throw new HttpException('User not found', HttpStatus.NOT_FOUND)
+        }
         Logger.log('User with email: ' + user.auth.private_nickname + 'got')
         return user
     }
 
     async getUserById(id: number) {
+        if (id > Number.MAX_SAFE_INTEGER) {
+            throw new BadRequestException('Invalid ID.')
+        }
         const user = await this.userRepository.findByPk(id, {
             include: { all: true },
             attributes: {
                 exclude: ['auth'],
             },
         })
+        if (!user) {
+            throw new HttpException('User not found', HttpStatus.NOT_FOUND)
+        }
         Logger.log('User with id: ' + user.id + 'got')
         return user
     }
 
-    async delUser(id) {
+    async delUser(id: number) {
+        if (id > Number.MAX_SAFE_INTEGER) {
+            throw new BadRequestException('Invalid ID.')
+        }
         const user = await this.userRepository.findByPk(id)
         if (!user) {
             throw new HttpException('User not found', HttpStatus.NOT_FOUND)

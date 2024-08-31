@@ -1,4 +1,5 @@
 import {
+    BadRequestException,
     ConflictException,
     HttpException,
     HttpStatus,
@@ -37,6 +38,9 @@ export class TeamsService {
     }
 
     async getTeamById(id: number) {
+        if (id > Number.MAX_SAFE_INTEGER) {
+            throw new BadRequestException('Invalid ID.')
+        }
         const team = await this.teamRepository.findOne({ where: { id } })
         if (!team) {
             throw new HttpException('Team not found', HttpStatus.NOT_FOUND)
@@ -132,6 +136,9 @@ export class TeamsService {
     async deleteTeam(
         id: number
     ): Promise<{ status: HttpStatus; message: string }> {
+        if (id > Number.MAX_SAFE_INTEGER) {
+            throw new BadRequestException('Invalid ID.')
+        }
         const team = await this.teamRepository.findByPk(id)
         if (!team) {
             throw new HttpException('Team not found', HttpStatus.NOT_FOUND)

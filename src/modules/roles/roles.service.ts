@@ -1,4 +1,9 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
+import {
+    BadRequestException,
+    HttpException,
+    HttpStatus,
+    Injectable,
+} from '@nestjs/common'
 import { CreateRoleDto } from './dto/create-role.dto'
 import { InjectModel } from '@nestjs/sequelize'
 import { Role } from './model/roles.model'
@@ -28,6 +33,9 @@ export class RolesService {
     }
 
     async getRoleById(id: number) {
+        if (id > Number.MAX_SAFE_INTEGER) {
+            throw new BadRequestException('Invalid ID.')
+        }
         const role = await this.roleRepository.findOne({ where: { id } })
         if (!role) {
             throw new HttpException('Role not found', HttpStatus.NOT_FOUND)
@@ -36,7 +44,13 @@ export class RolesService {
     }
 
     async deleteRole(id: number) {
-        await this.roleRepository.destroy({ where: { id } })
+        if (id > Number.MAX_SAFE_INTEGER) {
+            throw new BadRequestException('Invalid ID.')
+        }
+        const role = await this.roleRepository.destroy({ where: { id } })
+        if (!role) {
+            throw new HttpException('Role not found', HttpStatus.NOT_FOUND)
+        }
         return { status: HttpStatus.OK, message: 'Role deleted' }
     }
 
