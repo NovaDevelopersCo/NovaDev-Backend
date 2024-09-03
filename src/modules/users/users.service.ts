@@ -1,10 +1,4 @@
-import {
-    HttpStatus,
-    Injectable,
-    HttpException,
-    Logger,
-    BadRequestException,
-} from '@nestjs/common'
+import { HttpStatus, Injectable, HttpException, Logger } from '@nestjs/common'
 import { User } from './model/users.model'
 import { InjectModel } from '@nestjs/sequelize'
 import { RolesService } from '../roles/roles.service'
@@ -14,6 +8,8 @@ import * as bcrypt from 'bcryptjs'
 import { TeamsService } from '../teams/teams.service'
 import { ChangeMyselfDateDto } from './dto/change-myself.dto'
 import { UploadService } from '../upload/upload.service'
+import { findOrThrowName } from 'src/helpers/findOrThrow'
+import { findOrThrowWithValidation } from 'src/helpers/findOrThrowWithValidation'
 
 @Injectable()
 export class UsersService {
@@ -48,32 +44,34 @@ export class UsersService {
         Logger.log('User with email: ' + user.auth.private_nickname + 'got')
         return user
     }
-
-    async getUserById(id: number) {
-        if (id > Number.MAX_SAFE_INTEGER) {
-            throw new BadRequestException('Invalid ID.')
-        }
-        const user = await this.userRepository.findByPk(id, {
-            include: { all: true },
-            attributes: {
-                exclude: ['auth'],
+    async getUserById(id: number): Promise<User> {
+        const user = await findOrThrowWithValidation<User>(
+            this.userRepository,
+            id,
+            {
+                include: { all: true },
+                attributes: {
+                    exclude: ['auth'],
+                },
             },
-        })
-        if (!user) {
-            throw new HttpException('User not found', HttpStatus.NOT_FOUND)
-        }
-        Logger.log('User with id: ' + user.id + 'got')
+            'User'
+        )
+
+        Logger.log('User with id: ' + user.id + ' got')
         return user
     }
-
     async delUser(id: number) {
-        if (id > Number.MAX_SAFE_INTEGER) {
-            throw new BadRequestException('Invalid ID.')
-        }
-        const user = await this.userRepository.findByPk(id)
-        if (!user) {
-            throw new HttpException('User not found', HttpStatus.NOT_FOUND)
-        }
+        const user = await findOrThrowWithValidation<User>(
+            this.userRepository,
+            id,
+            {
+                include: { all: true },
+                attributes: {
+                    exclude: ['auth'],
+                },
+            },
+            'User'
+        )
         try {
             await user.destroy()
             Logger.log(`User ${id} was deleted successfully`)
@@ -87,18 +85,15 @@ export class UsersService {
         }
     }
 
-    async getUserAuthInfo(private_nickname: string) {
-        const user = await this.userRepository.findOne({
-            where: {
-                'auth.private_nickname': private_nickname,
+    async getUserAuthInfo(private_nickname: string): Promise<User> {
+        return await findOrThrowName<User>(
+            this.userRepository,
+            {
+                where: { 'auth.private_nickname': private_nickname },
+                include: { all: true },
             },
-            include: { all: true },
-        })
-
-        if (!user) {
-            throw new HttpException(`User not found`, HttpStatus.NOT_FOUND)
-        }
-        return user
+            'User'
+        )
     }
 
     async createUser() {
@@ -134,14 +129,17 @@ export class UsersService {
         userId: number,
         imageUrl?: any
     ): Promise<User> {
-        const user = await this.userRepository.findByPk(userId, {
-            attributes: {
-                exclude: ['auth'],
+        const user = await findOrThrowWithValidation<User>(
+            this.userRepository,
+            userId,
+            {
+                include: { all: true },
+                attributes: {
+                    exclude: ['auth'],
+                },
             },
-        })
-        if (!user) {
-            throw new HttpException('User not found', HttpStatus.NOT_FOUND)
-        }
+            'User'
+        )
         const updatedFields = { ...dto }
         if (imageUrl) {
             const uploadedImageUrl =
@@ -170,14 +168,17 @@ export class UsersService {
     }
 
     async changeUserDate(dto: ChangeUserDateDto, id) {
-        const user = await this.userRepository.findByPk(id)
-        if (!user) {
-            throw new HttpException(
-                'User not found',
-                HttpStatus.INTERNAL_SERVER_ERROR
-            )
-        }
-
+        const user = await findOrThrowWithValidation<User>(
+            this.userRepository,
+            id,
+            {
+                include: { all: true },
+                attributes: {
+                    exclude: ['auth'],
+                },
+            },
+            'User'
+        )
         if (dto.newEmail) {
             user.auth.private_nickname = dto.newEmail
         }

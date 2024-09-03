@@ -10,6 +10,7 @@ import { User } from '../users/model/users.model'
 import { Project } from './model/project.model'
 import { CreateProjectDto } from './dto/create-project.dto'
 import { UserProject } from './model/projectUser.model'
+import { findOrThrowWithValidation } from 'src/helpers/findOrThrowWithValidation'
 
 @Injectable()
 export class ProjectService {
@@ -32,40 +33,54 @@ export class ProjectService {
     }
 
     async getProjectById(id: number) {
-        if (id > Number.MAX_SAFE_INTEGER) {
-            throw new BadRequestException('Invalid ID.')
-        }
-        const project = await this.projectRepository.findOne({ where: { id } })
-        if (!project) {
-            throw new HttpException('Project not found', HttpStatus.NOT_FOUND)
-        }
+        const project = await findOrThrowWithValidation<Project>(
+            this.projectRepository,
+            id,
+            { include: { all: true } },
+            'Project'
+        )
         return project
     }
 
-    async deleteProject(id: number) {
-        if (id > Number.MAX_SAFE_INTEGER) {
-            throw new BadRequestException('Invalid ID.')
+    async deleteProject(
+        id: number
+    ): Promise<{ status: HttpStatus; message: string }> {
+        const project = await findOrThrowWithValidation<Project>(
+            this.projectRepository,
+            id,
+            { include: { all: true } },
+            'Project'
+        )
+        try {
+            await project.destroy()
+            Logger.log(`Project ${id} was deleted successfully`)
+            return {
+                status: HttpStatus.OK,
+                message: 'Project deleted successfully',
+            }
+        } catch (error) {
+            Logger.log(`Error deleting Project with id ${id}: ${error.message}`)
+            throw new HttpException(
+                'Error deleting Project',
+                HttpStatus.INTERNAL_SERVER_ERROR
+            )
         }
-        const project = await this.projectRepository.destroy({ where: { id } })
-        if (!project) {
-            throw new HttpException('Project not found', HttpStatus.NOT_FOUND)
-        }
-        return { status: HttpStatus.OK, message: 'Project deleted' }
     }
 
     async AddUserToProject(projectId: number, userId: number) {
-        const project = await this.projectRepository.findOne({
-            where: { id: projectId },
-        })
-        if (!project) {
-            throw new HttpException('Project not found', HttpStatus.NOT_FOUND)
-        }
+        const project = await findOrThrowWithValidation<Project>(
+            this.projectRepository,
+            projectId,
+            { include: { all: true } },
+            'Project'
+        )
 
-        const user = await User.findByPk(userId)
-        if (!user) {
-            throw new HttpException('User not found', HttpStatus.NOT_FOUND)
-        }
-
+        const user = await findOrThrowWithValidation<User>(
+            User,
+            userId,
+            { include: { all: true } },
+            'User'
+        )
         const userProject = await user.$get('projects')
         const userHasProject = userProject.some(
             (userProject: any) => userProject.id === projectId
@@ -86,17 +101,19 @@ export class ProjectService {
     }
 
     async CutUserToProject(projectId: number, userId: number) {
-        const project = await this.projectRepository.findOne({
-            where: { id: projectId },
-        })
-        if (!project) {
-            throw new HttpException('Project not found', HttpStatus.NOT_FOUND)
-        }
+        const project = await findOrThrowWithValidation<Project>(
+            this.projectRepository,
+            projectId,
+            { include: { all: true } },
+            'Project'
+        )
 
-        const user = await User.findByPk(userId)
-        if (!user) {
-            throw new HttpException('User not found', HttpStatus.NOT_FOUND)
-        }
+        const user = await findOrThrowWithValidation<User>(
+            User,
+            userId,
+            { include: { all: true } },
+            'User'
+        )
 
         const userProject = await user.$get('projects')
         const userHasProject = userProject.some(
@@ -118,10 +135,12 @@ export class ProjectService {
     }
 
     async updateProject(id: number, dto: CreateProjectDto) {
-        const project = await this.getProjectById(id)
-        if (!project) {
-            throw new HttpException('Project not found', HttpStatus.NOT_FOUND)
-        }
+        const project = await findOrThrowWithValidation<Project>(
+            this.projectRepository,
+            id,
+            { include: { all: true } },
+            'Project'
+        )
 
         Object.assign(project, dto)
 
