@@ -179,8 +179,8 @@ export class UsersService {
             },
             'User'
         )
-        if (dto.newEmail) {
-            user.auth.private_nickname = dto.newEmail
+        if (dto.email) {
+            user.auth.private_nickname = dto.email
         }
         if (dto.password) {
             const hashPassword = await bcrypt.hash(dto.password, 10)
