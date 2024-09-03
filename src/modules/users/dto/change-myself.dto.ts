@@ -1,5 +1,6 @@
 import {
     IsEmail,
+    IsNotEmpty,
     IsOptional,
     IsString,
     IsUrl,
@@ -18,6 +19,7 @@ export class ChangeMyselfDateDto {
     readonly public_nickname?: string
 
     @IsOptional()
+    @IsNotEmpty({ message: 'Поле имя не должно быть пустым' })
     @IsString({ message: 'Полное имя должно быть строкой' })
     @Length(3, 50, {
         message: 'Полное имя должно содержать от 3 до 50 символов',

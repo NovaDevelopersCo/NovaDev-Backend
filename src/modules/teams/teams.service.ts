@@ -1,4 +1,5 @@
 import {
+    BadRequestException,
     ConflictException,
     HttpException,
     HttpStatus,
@@ -10,6 +11,8 @@ import { Team } from './model/teams.model'
 import { TeamDto } from './dto/create-team.dto'
 import { User } from '../users/model/users.model'
 import { UploadService } from '../upload/upload.service'
+import { findOrThrow } from 'src/helpers/findOrThrow'
+import { findOrThrowWithValidation } from 'src/helpers/findOrThrowWithValidation'
 @Injectable()
 export class TeamsService {
     constructor(
@@ -25,22 +28,26 @@ export class TeamsService {
         return teams
     }
 
-    async getTeamByTitle(title: string) {
-        const team = await this.teamRepository.findOne({
-            where: { title },
-            include: { all: true },
-        })
-        if (!team) {
-            throw new HttpException('Team not found', HttpStatus.NOT_FOUND)
-        }
+    async getTeamByTitle(title: string): Promise<Team> {
+        const team = await findOrThrow<Team>(
+            this.teamRepository,
+            title,
+            'title',
+            {
+                include: { all: true },
+            }
+        )
         return team
     }
 
     async getTeamById(id: number) {
-        const team = await this.teamRepository.findOne({ where: { id } })
-        if (!team) {
-            throw new HttpException('Team not found', HttpStatus.NOT_FOUND)
-        }
+        const team = await findOrThrowWithValidation<Team>(
+            this.teamRepository,
+            id,
+            { include: { all: true } },
+            'Team'
+        )
+
         return team
     }
 
@@ -48,15 +55,22 @@ export class TeamsService {
         teamId: number,
         userId: number
     ): Promise<{ status: HttpStatus; message: string }> {
-        const team = await this.teamRepository.findByPk(teamId)
-        if (!team) {
-            throw new HttpException('Team not found', HttpStatus.NOT_FOUND)
-        }
+        const team = await findOrThrow<Team>(
+            this.teamRepository,
+            teamId,
+            'id',
+            { include: { all: true } },
+            'Team'
+        )
 
-        const user = await User.findByPk(userId)
-        if (!user) {
-            throw new HttpException('User not found', HttpStatus.NOT_FOUND)
-        }
+        const user = await findOrThrow<User>(
+            this.userRepository,
+            userId,
+            'id',
+            { include: { all: true } },
+            'User'
+        )
+
         if (user.teamId === teamId) {
             throw new HttpException(
                 'User is already in the team',
@@ -76,17 +90,22 @@ export class TeamsService {
         userId: number,
         teamId: number
     ): Promise<{ status: HttpStatus; message: string }> {
-        const team = await this.teamRepository.findByPk(teamId)
+        const team = await findOrThrow<Team>(
+            this.teamRepository,
+            teamId,
+            'id',
+            { include: { all: true } },
+            'Team'
+        )
 
-        if (!team) {
-            throw new HttpException('Team not found', HttpStatus.NOT_FOUND)
-        }
+        const user = await findOrThrow<User>(
+            this.userRepository,
+            userId,
+            'id',
+            { include: { all: true } },
+            'User'
+        )
 
-        const user = await User.findByPk(userId)
-
-        if (!user) {
-            throw new HttpException('User not found', HttpStatus.NOT_FOUND)
-        }
         if (user.teamId !== teamId) {
             Logger.log(
                 `User with ID ${userId} does not have team with ID ${teamId}`
@@ -132,10 +151,12 @@ export class TeamsService {
     async deleteTeam(
         id: number
     ): Promise<{ status: HttpStatus; message: string }> {
-        const team = await this.teamRepository.findByPk(id)
-        if (!team) {
-            throw new HttpException('Team not found', HttpStatus.NOT_FOUND)
-        }
+        const team = await findOrThrowWithValidation<Team>(
+            this.teamRepository,
+            id,
+            { include: { all: true } },
+            'Team'
+        )
         try {
             await team.destroy()
             Logger.log(`Team ${id} was deleted successfully`)
@@ -157,11 +178,12 @@ export class TeamsService {
         id: number,
         imageUrl?: any
     ): Promise<Team> {
-        const team = await this.teamRepository.findByPk(id)
-        if (!team) {
-            throw new HttpException('Team not found', HttpStatus.NOT_FOUND)
-        }
-
+        const team = await findOrThrowWithValidation<Team>(
+            this.teamRepository,
+            id,
+            { include: { all: true } },
+            'Team'
+        )
         let image: string = ''
 
         if (imageUrl) {

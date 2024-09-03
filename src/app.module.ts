@@ -20,7 +20,6 @@ import { BotModule } from './modules/bot/bot.module'
 
 @Module({
     controllers: [],
-    providers: [],
     imports: [
         UploadModule,
         ConfigModule.forRoot({

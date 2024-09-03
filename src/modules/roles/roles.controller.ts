@@ -35,11 +35,6 @@ export class RolesController {
         return this.roleService.createRole(dto)
     }
 
-    @Get('/:title')
-    getBytitle(@Param('title') title: string) {
-        return this.roleService.getRoleByTitle(title)
-    }
-
     @Get('/:id')
     getById(@Param('id') id: number) {
         return this.roleService.getRoleById(id)

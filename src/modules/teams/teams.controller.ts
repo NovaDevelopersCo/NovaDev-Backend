@@ -7,6 +7,7 @@ import {
     Post,
     Put,
     UploadedFile,
+    UseFilters,
     UseGuards,
     UseInterceptors,
 } from '@nestjs/common'
