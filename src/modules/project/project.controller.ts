@@ -29,8 +29,8 @@ export class ProjectController {
     @ApiOperation({ summary: 'Создание Проекта' })
     @ApiResponse({ status: 200, type: Project })
     @Roles('ADMIN')
+    @ApiBearerAuth('JWT-auth')
     @UseGuards(RolesGuard)
-    @Get('/:title')
     @Post()
     create(@Body() dto: CreateProjectDto) {
         return this.projectService.createProject(dto)

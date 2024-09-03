@@ -23,7 +23,7 @@ export class Info implements InfoAttrs {
 export const InfoDefault: InfoAttrs = {
     email: null,
     public_nickname: null,
-    full_name: null,
+    full_name: 'Петя',
     github: null,
     payment_info: null,
     tg: null,
