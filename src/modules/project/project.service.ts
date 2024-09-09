@@ -27,7 +27,17 @@ export class ProjectService {
 
     async getAll() {
         const projects = await this.projectRepository.findAll({
-            include: { all: true },
+            include: [
+                {
+                    model: UserProject,
+                    include: [
+                        {
+                            model: User,
+                            attributes: { exclude: ['auth'] },
+                        },
+                    ],
+                },
+            ],
         })
         return projects
     }
