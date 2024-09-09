@@ -4,6 +4,7 @@ import { InjectModel } from '@nestjs/sequelize'
 import { Role } from './model/roles.model'
 import { findOrThrow } from 'src/helpers/findOrThrow'
 import { findOrThrowWithValidation } from 'src/helpers/findOrThrowWithValidation'
+import { User } from '../users/model/users.model'
 
 @Injectable()
 export class RolesService {
@@ -16,7 +17,12 @@ export class RolesService {
 
     async getAll() {
         const role = await this.roleRepository.findAll({
-            include: { all: true },
+            include: [
+                {
+                    model: User,
+                    attributes: { exclude: ['auth'] },
+                },
+            ],
         })
         return role
     }
@@ -39,7 +45,12 @@ export class RolesService {
             this.roleRepository,
             id,
             {
-                include: { all: true },
+                include: [
+                    {
+                        model: User,
+                        attributes: { exclude: ['auth'] },
+                    },
+                ],
             },
             'Role'
         )
@@ -75,7 +86,14 @@ export class RolesService {
         const role = await findOrThrowWithValidation<Role>(
             this.roleRepository,
             id,
-            { include: { all: true } },
+            {
+                include: [
+                    {
+                        model: User,
+                        attributes: { exclude: ['auth'] },
+                    },
+                ],
+            },
             'Role'
         )
         role.title = dto.title

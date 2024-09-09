@@ -40,7 +40,12 @@ export class TeamsService {
             title,
             'title',
             {
-                include: { all: true },
+                include: [
+                    {
+                        model: User,
+                        attributes: { exclude: ['auth'] },
+                    },
+                ],
             }
         )
         return team
@@ -50,7 +55,14 @@ export class TeamsService {
         const team = await findOrThrowWithValidation<Team>(
             this.teamRepository,
             id,
-            { include: { all: true } },
+            {
+                include: [
+                    {
+                        model: User,
+                        attributes: { exclude: ['auth'] },
+                    },
+                ],
+            },
             'Team'
         )
 
@@ -187,7 +199,14 @@ export class TeamsService {
         const team = await findOrThrowWithValidation<Team>(
             this.teamRepository,
             id,
-            { include: { all: true } },
+            {
+                include: [
+                    {
+                        model: User,
+                        attributes: { exclude: ['auth'] },
+                    },
+                ],
+            },
             'Team'
         )
         let image: string = ''
