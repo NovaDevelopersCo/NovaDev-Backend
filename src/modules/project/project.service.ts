@@ -46,7 +46,14 @@ export class ProjectService {
         const project = await findOrThrowWithValidation<Project>(
             this.projectRepository,
             id,
-            { include: { all: true } },
+            {
+                include: [
+                    {
+                        model: User,
+                        attributes: { exclude: ['auth'] },
+                    },
+                ],
+            },
             'Project'
         )
         return project
@@ -148,7 +155,14 @@ export class ProjectService {
         const project = await findOrThrowWithValidation<Project>(
             this.projectRepository,
             id,
-            { include: { all: true } },
+            {
+                include: [
+                    {
+                        model: User,
+                        attributes: { exclude: ['auth'] },
+                    },
+                ],
+            },
             'Project'
         )
 
