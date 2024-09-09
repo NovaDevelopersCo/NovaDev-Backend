@@ -23,10 +23,16 @@ export class TeamsService {
 
     async getAllTeams() {
         const teams = await this.teamRepository.findAll({
-            include: { all: true },
+            include: [
+                {
+                    model: User,
+                    attributes: { exclude: ['auth'] },
+                },
+            ],
         })
         return teams
     }
+    А
 
     async getTeamByTitle(title: string): Promise<Team> {
         const team = await findOrThrow<Team>(
