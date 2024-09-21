@@ -60,7 +60,7 @@ export class UsersService {
         Logger.log('User with id: ' + user.id + ' got')
         return user
     }
-    async delUser(id: number,  options?: { transaction?: any }) {
+    async delUser(id: number) {
         const user = await findOrThrowWithValidation<User>(
             this.userRepository,
             id,
