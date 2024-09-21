@@ -8,7 +8,7 @@ import {
     Put,
     UseGuards,
 } from '@nestjs/common'
-import { ClinetService } from './clients.service'
+import { ClientService } from './clients.service'
 import { CreateClientDto } from './dto/create-client.dto'
 import {
     ApiBearerAuth,
@@ -24,7 +24,7 @@ import { InteractionClientDto } from './dto/interaction-client.dto'
 @ApiTags('Клиенты')
 @Controller('clients')
 export class ClientController {
-    constructor(private readonly clientService: ClinetService) {}
+    constructor(private readonly clientService: ClientService) {}
 
     @ApiOperation({ summary: 'Создание Клиента' })
     @ApiResponse({ status: 200, type: Client })

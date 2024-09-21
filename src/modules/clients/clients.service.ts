@@ -13,7 +13,7 @@ import { findOrThrow } from 'src/helpers/findOrThrow'
 import { findOrThrowWithValidation } from 'src/helpers/findOrThrowWithValidation'
 
 @Injectable()
-export class ClinetService {
+export class ClientService {
     constructor(
         @InjectModel(Project)
         private projectRepository: typeof Project,
