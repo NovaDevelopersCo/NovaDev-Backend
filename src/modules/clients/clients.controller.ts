@@ -8,7 +8,7 @@ import {
     Put,
     UseGuards,
 } from '@nestjs/common'
-import { ClinetService } from './clients.service'
+import { ClientService } from './clients.service'
 import { CreateClientDto } from './dto/create-client.dto'
 import {
     ApiBearerAuth,
@@ -24,7 +24,7 @@ import { InteractionClientDto } from './dto/interaction-client.dto'
 @ApiTags('Клиенты')
 @Controller('clients')
 export class ClientController {
-    constructor(private readonly clientService: ClinetService) {}
+    constructor(private readonly clientService: ClientService) {}
 
     @ApiOperation({ summary: 'Создание Клиента' })
     @ApiResponse({ status: 200, type: Client })
@@ -32,7 +32,7 @@ export class ClientController {
     @UseGuards(RolesGuard)
     @Post()
     create(@Body() dto: CreateClientDto) {
-        return this.clientService.createClinet(dto)
+        return this.clientService.createClient(dto)
     }
     @ApiOperation({ summary: 'Получение клиента по айди' })
     @ApiResponse({ status: 200, type: Client })

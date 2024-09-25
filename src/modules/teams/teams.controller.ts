@@ -7,7 +7,6 @@ import {
     Post,
     Put,
     UploadedFile,
-    UseFilters,
     UseGuards,
     UseInterceptors,
 } from '@nestjs/common'
@@ -26,9 +25,9 @@ export class TeamsController {
 
     @ApiOperation({ summary: 'Создать команду' })
     @ApiResponse({ status: 200, type: Team })
-    // @Roles('ADMIN')
-    // @ApiBearerAuth('JWT-auth')
-    // @UseGuards(RolesGuard)
+    @Roles('ADMIN')
+    @ApiBearerAuth('JWT-auth')
+    @UseGuards(RolesGuard)
     @Post()
     @UseInterceptors(FileInterceptor('image'))
     createTeam(@Body() dto: TeamDto, @UploadedFile() image) {

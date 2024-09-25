@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import { Injectable } from '@nestjs/common'
 import { UsersService } from '../../users/users.service'
 import { AuthService } from '../../auth/auth.service'

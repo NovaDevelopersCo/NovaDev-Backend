@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import {
     registerDecorator,
     ValidationOptions,
@@ -12,7 +13,7 @@ export function IsNotWhitespace(validationOptions?: ValidationOptions) {
             options: validationOptions,
             constraints: [],
             validator: {
-                validate(value: any, args: ValidationArguments) {
+                validate(value: any) {
                     return typeof value === 'string' && value.trim().length > 0
                 },
                 defaultMessage(args: ValidationArguments) {

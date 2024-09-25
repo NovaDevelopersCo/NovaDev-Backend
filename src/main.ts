@@ -11,7 +11,6 @@ async function start() {
         origin: true,
     })
     app.use(
-        // Paths you want to protect with basic auth
         '/api/docs*',
         basicAuth({
             challenge: true,
