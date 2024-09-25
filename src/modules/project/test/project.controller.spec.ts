@@ -1,3 +1,4 @@
+/* eslint-disable  @typescript-eslint/no-unused-vars*/
 import { Test, TestingModule } from '@nestjs/testing'
 import { ProjectController } from '../project.controller'
 import { ProjectService } from '../project.service'
@@ -11,16 +12,15 @@ describe('ProjectController', () => {
     let controller: ProjectController
     let service: ProjectService
 
-
     const mockProject = {
         id: 25,
         title: 'Ecomerse121',
         technologies: ['NestJS', 'FastApi'],
-        server: '', 
-        documentation: '', 
+        server: '',
+        documentation: '',
         deadline: new Date('2006-01-01T20:01:00.000Z'),
         clientId: null,
-        createdAt: new Date('2024-09-09T07:18:36.310Z'), 
+        createdAt: new Date('2024-09-09T07:18:36.310Z'),
         updatedAt: new Date('2024-09-09T07:18:36.310Z'),
         users: [],
     } as Project

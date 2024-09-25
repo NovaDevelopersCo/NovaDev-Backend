@@ -1,5 +1,4 @@
 import {
-    BadRequestException,
     ConflictException,
     HttpException,
     HttpStatus,
@@ -73,7 +72,7 @@ export class TeamsService {
         teamId: number,
         userId: number
     ): Promise<{ status: HttpStatus; message: string }> {
-        const team = await findOrThrow<Team>(
+        const team = await findOrThrow<Team>( // eslint-disable-line @typescript-eslint/no-unused-vars
             this.teamRepository,
             teamId,
             'id',
@@ -108,7 +107,7 @@ export class TeamsService {
         userId: number,
         teamId: number
     ): Promise<{ status: HttpStatus; message: string }> {
-        const team = await findOrThrow<Team>(
+        const team = await findOrThrow<Team>( // eslint-disable-line @typescript-eslint/no-unused-vars
             this.teamRepository,
             teamId,
             'id',

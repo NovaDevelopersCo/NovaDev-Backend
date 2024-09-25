@@ -4,6 +4,7 @@ import {
     HttpException,
     Logger,
     BadRequestException,
+    ConflictException,
 } from '@nestjs/common'
 import { InjectModel } from '@nestjs/sequelize'
 import { Client } from './model/client.model'
@@ -21,9 +22,24 @@ export class ClientService {
         private clientRepository: typeof Client
     ) {}
 
-    async createClinet(dto: CreateClientDto) {
-        const client = await this.clientRepository.create(dto)
-        return client
+    async createClient(dto: CreateClientDto) {
+        const existingClient = await this.clientRepository.findOne({
+            where: [{ phone: dto.phone }, { tg: dto.tg }, { name: dto.name }],
+        })
+        if (existingClient) {
+            throw new ConflictException(
+                'Клиент с таким номером телефона, Telegram ID или именем уже существует'
+            )
+        }
+        try {
+            const client = await this.clientRepository.create(dto)
+            return client
+        } catch (error) {
+            console.error('Ошибка валидации при создании клиента:', error)
+            throw new BadRequestException(
+                'Ошибка при создании клиента: ' + error.message
+            )
+        }
     }
 
     async getAll() {

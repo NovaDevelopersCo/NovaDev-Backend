@@ -1,12 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger'
-import {
-    Column,
-    DataType,
-    Model,
-    Table,
-    BelongsToMany,
-    HasMany,
-} from 'sequelize-typescript'
+import { Column, DataType, Model, Table, HasMany } from 'sequelize-typescript'
 import { Project } from 'src/modules/project/model/project.model'
 
 interface ClientCreationAttrs {

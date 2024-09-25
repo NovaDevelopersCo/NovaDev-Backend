@@ -11,8 +11,7 @@ import { userMock } from './mock/user.mock'
 import { findOrThrowWithValidation } from 'src/helpers/findOrThrowWithValidation'
 import { HttpException, HttpStatus } from '@nestjs/common'
 
-
-jest.mock('src/helpers/findOrThrowWithValidation');
+jest.mock('src/helpers/findOrThrowWithValidation')
 
 const mockRolesService = {
     getRoleByTitle: jest.fn().mockResolvedValue({
@@ -81,10 +80,16 @@ describe('UsersController', () => {
         expect(result).toEqual(userMock)
     })
 
-
     it('should throw an exception if user not found', async () => {
-        const notFoundException = new HttpException('User not found', HttpStatus.NOT_FOUND);
-        (findOrThrowWithValidation as jest.Mock).mockRejectedValue(notFoundException);
-        await expect(controller.getUserById(222)).rejects.toThrowError(notFoundException);
-    });
+        const notFoundException = new HttpException(
+            'User not found',
+            HttpStatus.NOT_FOUND
+        )
+        ;(findOrThrowWithValidation as jest.Mock).mockRejectedValue(
+            notFoundException
+        )
+        await expect(controller.getUserById(222)).rejects.toThrowError(
+            notFoundException
+        )
+    })
 })

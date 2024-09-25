@@ -1,10 +1,4 @@
-import {
-    HttpStatus,
-    Injectable,
-    HttpException,
-    Logger,
-    BadRequestException,
-} from '@nestjs/common'
+import { HttpStatus, Injectable, HttpException, Logger } from '@nestjs/common'
 import { InjectModel } from '@nestjs/sequelize'
 import { User } from '../users/model/users.model'
 import { Project } from './model/project.model'

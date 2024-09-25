@@ -32,7 +32,7 @@ export class ClientController {
     @UseGuards(RolesGuard)
     @Post()
     create(@Body() dto: CreateClientDto) {
-        return this.clientService.createClinet(dto)
+        return this.clientService.createClient(dto)
     }
     @ApiOperation({ summary: 'Получение клиента по айди' })
     @ApiResponse({ status: 200, type: Client })

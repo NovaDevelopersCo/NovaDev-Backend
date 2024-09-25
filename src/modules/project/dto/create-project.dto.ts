@@ -1,7 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { ArrayNotEmpty, IsArray, IsNotEmpty, IsString } from 'class-validator'
 import { Client } from 'src/modules/clients/model/client.model'
-import { IsNotWhitespace } from 'src/pipes/spaces-validation.pipe'
 
 export class CreateProjectDto {
     @IsNotEmpty({ message: 'Название проекта обязательно' })

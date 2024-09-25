@@ -109,7 +109,7 @@ export class UsersService {
             tg_id: null,
         })
 
-        const role = await this.roleService.getRoleByTitle('FRONTEND')
+        const role = await this.roleService.getRoleByTitle('USER')
         if (user && role) {
             user.roleId = role.id
             await user.save()
